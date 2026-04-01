@@ -76,6 +76,12 @@ const diary2Schema = new mongoose.Schema({
         required: true,
         min: 0
     },
+    salaryPaidToPiraji: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
     deletedAt: {
         type: Date,
         default: null

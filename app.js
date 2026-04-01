@@ -156,6 +156,7 @@ function buildDiary2WeeklySummaries(entries) {
                 dabar: 0,
                 loaderQty: 0,
                 holes: 0,
+                salaryPaidToPiraji: 0,
                 tractorHawari: 0,
                 dumperHawari: 0,
                 rawalTotal: 0,
@@ -198,6 +199,7 @@ function buildDiary2WeeklySummaries(entries) {
         weekSummary.dabar += entry.dabar || 0;
         weekSummary.loaderQty += entry.loaderQty || 0;
         weekSummary.holes += entry.holes || 0;
+        weekSummary.salaryPaidToPiraji += entry.salaryPaidToPiraji || 0;
         weekSummary.tractorHawari += tractorHawari;
         weekSummary.dumperHawari += dumperHawari;
         weekSummary.hawariTotals.tractor.ranga += entry.tractorHawari?.ranga || 0;
@@ -269,7 +271,8 @@ function getDiary2FormData(entry = {}) {
                 other: entry.dumperHawari?.other ?? 0
             },
             holes: entry.holes ?? 0,
-            loaderQty: entry.loaderQty ?? 0
+            loaderQty: entry.loaderQty ?? 0,
+            salaryPaidToPiraji: entry.salaryPaidToPiraji ?? 0
         }
     };
 }
@@ -545,7 +548,8 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
         dumperRama,
         dumperOther,
         holes,
-        loaderQty
+        loaderQty,
+        salaryPaidToPiraji
     } = req.body;
 
     const normalizedDate = normalizeDateOnly(entryDate);
@@ -573,7 +577,8 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
             other: Number(dumperOther) || 0
         },
         holes: Number(holes) || 0,
-        loaderQty: Number(loaderQty) || 0
+        loaderQty: Number(loaderQty) || 0,
+        salaryPaidToPiraji: Number(salaryPaidToPiraji) || 0
     };
 
     if (existingEntry) {
@@ -603,7 +608,8 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
         dumperRama,
         dumperOther,
         holes,
-        loaderQty
+        loaderQty,
+        salaryPaidToPiraji
     } = req.body;
 
     const entry = await Diary2.findOne({ _id: req.params.id, ...ACTIVE_FILTER });
@@ -636,6 +642,7 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
     };
     entry.holes = Number(holes) || 0;
     entry.loaderQty = Number(loaderQty) || 0;
+    entry.salaryPaidToPiraji = Number(salaryPaidToPiraji) || 0;
 
     await entry.save();
 
