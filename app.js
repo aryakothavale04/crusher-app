@@ -65,6 +65,12 @@ const dateFormatter = new Intl.DateTimeFormat("en-CA", {
     month: "2-digit",
     day: "2-digit"
 });
+const reportDateFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "UTC",
+    year: "numeric",
+    month: "short",
+    day: "2-digit"
+});
 
 function normalizeDateOnly(value) {
     if (!value) {
@@ -86,6 +92,22 @@ function formatDateInput(value) {
     }
 
     return dateFormatter.format(value);
+}
+
+function formatReportDateRange(startValue, endValueExclusive) {
+    const start = startValue instanceof Date ? new Date(startValue.getTime()) : normalizeDateOnly(startValue);
+    const endExclusive = endValueExclusive instanceof Date
+        ? new Date(endValueExclusive.getTime())
+        : normalizeDateOnly(endValueExclusive);
+
+    if (!start || !endExclusive) {
+        return "";
+    }
+
+    const inclusiveEnd = new Date(endExclusive.getTime());
+    inclusiveEnd.setUTCDate(inclusiveEnd.getUTCDate() - 1);
+
+    return `${reportDateFormatter.format(start)} to ${reportDateFormatter.format(inclusiveEnd)}`;
 }
 
 const ACTIVE_FILTER = { deletedAt: null };
@@ -125,6 +147,7 @@ function buildDiary2WeeklySummaries(entries) {
                 weekKey,
                 weekStart,
                 weekEnd,
+                weekLabel: formatReportDateRange(weekStart, weekEnd),
                 entryCount: 0,
                 rawalForMachine: 0,
                 rawalForOutside: 0,
@@ -226,10 +249,10 @@ function getDiary2FormData(entry = {}) {
     return {
         today: entry.entryDate ? formatDateInput(entry.entryDate) : formatDateInput(new Date()),
         values: {
-            rawalForMachine: entry.rawalForMachine ?? "",
-            rawalForOutside: entry.rawalForOutside ?? "",
-            dabar: entry.dabar ?? "",
-            dalni: entry.dalni ?? "",
+            rawalForMachine: entry.rawalForMachine ?? 0,
+            rawalForOutside: entry.rawalForOutside ?? 0,
+            dabar: entry.dabar ?? 0,
+            dalni: entry.dalni ?? 0,
             tractorHawari: {
                 ranga: entry.tractorHawari?.ranga ?? 0,
                 piraji: entry.tractorHawari?.piraji ?? 0,
@@ -244,8 +267,8 @@ function getDiary2FormData(entry = {}) {
                 rama: entry.dumperHawari?.rama ?? 0,
                 other: entry.dumperHawari?.other ?? 0
             },
-            holes: entry.holes ?? "",
-            loaderQty: entry.loaderQty ?? ""
+            holes: entry.holes ?? 0,
+            loaderQty: entry.loaderQty ?? 0
         }
     };
 }

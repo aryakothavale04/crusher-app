@@ -60,11 +60,49 @@ if (diary1Form) {
 const rawalForMachineInput = document.querySelector("#rawal-for-machine");
 
 if (rawalForMachineInput) {
+    const diary2Form = document.querySelector("#diary2-form");
     const dalniOutput = document.querySelector("#dalni-output");
 
     const syncDalni = () => {
         dalniOutput.value = rawalForMachineInput.value || "0";
     };
+
+    const numericInputs = diary2Form
+        ? Array.from(diary2Form.querySelectorAll('input[type="number"]:not([readonly])'))
+        : [];
+
+    const selectZeroValue = (event) => {
+        if (event.target.value === "0") {
+            event.target.select();
+        }
+    };
+
+    const replaceZeroOnType = (event) => {
+        const { target, key, ctrlKey, metaKey, altKey } = event;
+
+        if (ctrlKey || metaKey || altKey || target.value !== "0") {
+            return;
+        }
+
+        if (/^[0-9]$/.test(key)) {
+            event.preventDefault();
+            target.value = key;
+            target.dispatchEvent(new Event("input", { bubbles: true }));
+            return;
+        }
+
+        if (key === "Backspace" || key === "Delete") {
+            event.preventDefault();
+            target.value = "";
+            target.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+    };
+
+    numericInputs.forEach((input) => {
+        input.addEventListener("focus", selectZeroValue);
+        input.addEventListener("click", selectZeroValue);
+        input.addEventListener("keydown", replaceZeroOnType);
+    });
 
     rawalForMachineInput.addEventListener("input", syncDalni);
     syncDalni();
