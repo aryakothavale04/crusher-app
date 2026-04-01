@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary 2</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>Diary 2</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-card">
+            <div class="hero-actions">
+                <a class="primary-btn" href="/diary2/new">Add Entry</a>
+                <a class="secondary-btn" href="/diary2/weekly-report">Weekly Report</a>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h3>All Entries</h3>
+                <span class="muted"><%= data.length %> records</span>
+            </div>
+
+            <% if (!data.length) { %>
+                <p class="empty-state">No entries yet. Add the first Diary 2 summary.</p>
+            <% } else { %>
+                <div class="day-card-list">
+                    <% data.forEach((entry) => { %>
+                        <article class="day-entry-card">
+                            <div class="record-day-header">
+                                <h4><%= formatDateInput(entry.entryDate) %> <span class="muted"><%= entry.day %></span></h4>
+                                <a href="/diary2/<%= entry._id %>/edit" class="inline-edit-link">Edit</a>
+                            </div>
+
+                            <div class="diary2-compact-card">
+                                <div class="diary2-summary-table">
+                                    <div class="summary-head">
+                                        <span class="rawal-head">Rawal</span>
+                                        <span>Dalni</span>
+                                        <span>Dabar</span>
+                                    </div>
+                                    <div class="summary-subhead">
+                                        <span>Mah</span>
+                                        <span>Out</span>
+                                        <span>Dalni</span>
+                                        <span>Dabar</span>
+                                    </div>
+                                    <div class="summary-values">
+                                        <span><%= entry.rawalForMachine %></span>
+                                        <span><%= entry.rawalForOutside %></span>
+                                        <span><%= entry.dalni %></span>
+                                        <span><%= entry.dabar %></span>
+                                    </div>
+                                </div>
+
+                                <div class="diary2-hawari-block">
+                                    <span class="compact-label">Hawari</span>
+                                    <p><strong>T</strong> Rg <%= entry.tractorHawari.ranga %>, Pi <%= entry.tractorHawari.piraji %>, Da <%= entry.tractorHawari.dada %>, Ra <%= entry.tractorHawari.rama %>, O <%= entry.tractorHawari.other %></p>
+                                    <p><strong>D</strong> Rg <%= entry.dumperHawari.ranga %>, Pi <%= entry.dumperHawari.piraji %>, Da <%= entry.dumperHawari.dada %>, Ra <%= entry.dumperHawari.rama %>, O <%= entry.dumperHawari.other %></p>
+                                </div>
+
+                                <div class="diary2-footer-lines">
+                                    <p><strong>Loader</strong> - <%= entry.loaderQty %> <strong>Holes</strong> - <%= entry.holes %></p>
+                                </div>
+                            </div>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } %>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+    <script src="/app.js"></script>
+</body>
+</html>

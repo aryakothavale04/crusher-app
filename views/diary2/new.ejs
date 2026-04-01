@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Diary 2 Entry</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>ADD ENTRY</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell narrow-shell">
+        <section class="panel">
+            <div class="panel-heading">
+                <h3>Diary 2 Form</h3>
+                <span class="muted">Daily site work done by employees</span>
+            </div>
+
+            <form action="/diary2" method="POST" class="entry-form" id="diary2-form">
+                <label>
+                    <span>Date</span>
+                    <input type="date" name="entryDate" id="diary2-date" value="<%= today %>" required>
+                </label>
+
+                <label>
+                    <span>Rawal For Mah</span>
+                    <input type="number" name="rawalForMachine" id="rawal-for-machine" min="0" placeholder="0" value="<%= values.rawalForMachine %>" required>
+                </label>
+
+                <label>
+                    <span>Rawal For Out</span>
+                    <input type="number" name="rawalForOutside" min="0" placeholder="0" value="<%= values.rawalForOutside %>" required>
+                </label>
+
+                <label>
+                    <span>Dabar</span>
+                    <input type="number" name="dabar" min="0" placeholder="0" value="<%= values.dabar %>" required>
+                </label>
+
+                <label>
+                    <span>Dalni</span>
+                    <input type="number" name="dalni" id="dalni-output" min="0" placeholder="0" value="<%= values.dalni %>" readonly required>
+                </label>
+
+                <section class="panel inset-panel">
+                    <div class="panel-heading">
+                        <h3>Tractor Hawari</h3>
+                    </div>
+                    <div class="mini-grid">
+                        <label>
+                            <span>Ranga</span>
+                            <input type="number" name="tractorRanga" min="0" placeholder="0" value="<%= values.tractorHawari.ranga %>" required>
+                        </label>
+                        <label>
+                            <span>Piraji</span>
+                            <input type="number" name="tractorPiraji" min="0" placeholder="0" value="<%= values.tractorHawari.piraji %>" required>
+                        </label>
+                        <label>
+                            <span>Dada</span>
+                            <input type="number" name="tractorDada" min="0" placeholder="0" value="<%= values.tractorHawari.dada %>" required>
+                        </label>
+                        <label>
+                            <span>Rama</span>
+                            <input type="number" name="tractorRama" min="0" placeholder="0" value="<%= values.tractorHawari.rama %>" required>
+                        </label>
+                        <label>
+                            <span>Other</span>
+                            <input type="number" name="tractorOther" min="0" placeholder="0" value="<%= values.tractorHawari.other %>" required>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="panel inset-panel">
+                    <div class="panel-heading">
+                        <h3>Dumper Hawari</h3>
+                    </div>
+                    <div class="mini-grid">
+                        <label>
+                            <span>Ranga</span>
+                            <input type="number" name="dumperRanga" min="0" placeholder="0" value="<%= values.dumperHawari.ranga %>" required>
+                        </label>
+                        <label>
+                            <span>Piraji</span>
+                            <input type="number" name="dumperPiraji" min="0" placeholder="0" value="<%= values.dumperHawari.piraji %>" required>
+                        </label>
+                        <label>
+                            <span>Dada</span>
+                            <input type="number" name="dumperDada" min="0" placeholder="0" value="<%= values.dumperHawari.dada %>" required>
+                        </label>
+                        <label>
+                            <span>Rama</span>
+                            <input type="number" name="dumperRama" min="0" placeholder="0" value="<%= values.dumperHawari.rama %>" required>
+                        </label>
+                        <label>
+                            <span>Other</span>
+                            <input type="number" name="dumperOther" min="0" placeholder="0" value="<%= values.dumperHawari.other %>" required>
+                        </label>
+                    </div>
+                </section>
+
+                <label>
+                    <span>How Many Hole</span>
+                    <input type="number" name="holes" min="0" placeholder="0" value="<%= values.holes %>" required>
+                </label>
+
+                <label>
+                    <span>Loader Qt</span>
+                    <input type="number" name="loaderQty" min="0" placeholder="0" value="<%= values.loaderQty %>" required>
+                </label>
+
+                <button class="primary-btn" type="submit">Save Entry</button>
+            </form>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

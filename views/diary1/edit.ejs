@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Diary 1 Entry</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>EDIT ENTRY</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell narrow-shell">
+        <section class="panel">
+            <div class="panel-heading">
+                <h3>Diary 1 Form</h3>
+                <span class="muted">Update entry and save changes</span>
+            </div>
+
+            <form action="/diary1/<%= entry._id %>?_method=PUT" method="POST" class="entry-form" id="diary1-form">
+                <label>
+                    <span>Date</span>
+                    <input type="date" name="entryDate" value="<%= today %>" required>
+                </label>
+
+                <label>
+                    <span>Name</span>
+                    <input type="text" name="name" placeholder="Customer name" value="<%= values.name %>" required>
+                </label>
+
+                <label>
+                    <span>City</span>
+                    <input type="text" name="city" placeholder="City" value="<%= values.city %>" required>
+                </label>
+
+                <label>
+                    <span>Vehicle Type</span>
+                    <select name="vehicleType" required>
+                        <option value="Tractor" <%= values.vehicleType === "Tractor" ? "selected" : "" %>>Tractor</option>
+                        <option value="Dumper" <%= values.vehicleType === "Dumper" ? "selected" : "" %>>Dumper</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span>Qt / Unit</span>
+                    <input type="number" name="quantity" step="0.01" min="0" placeholder="0" value="<%= values.quantity %>" required>
+                </label>
+
+                <label>
+                    <span>Rate Per Unit</span>
+                    <input type="number" name="rate" step="0.01" min="0" placeholder="0" value="<%= values.rate %>" required>
+                </label>
+
+                <label>
+                    <span>Payment</span>
+                    <select name="paymentStatus" id="payment-status" required>
+                        <option value="Unpaid" <%= values.paymentStatus === "Unpaid" ? "selected" : "" %>>Unpaid</option>
+                        <option value="Partial" <%= values.paymentStatus === "Partial" ? "selected" : "" %>>Partial</option>
+                        <option value="Paid" <%= values.paymentStatus === "Paid" ? "selected" : "" %>>Paid</option>
+                    </select>
+                </label>
+
+                <label id="paid-amount-field">
+                    <span>Paid Amount</span>
+                    <input type="number" name="paidAmount" id="paid-amount-input" step="0.01" min="0" placeholder="0" value="<%= values.paidAmount %>">
+                </label>
+
+                <div class="calculation-box">
+                    <span>Auto Total</span>
+                    <strong id="diary1-total">0.00</strong>
+                </div>
+
+                <div class="action-row">
+                    <button class="primary-btn" type="submit">Save Changes</button>
+                    <a href="/diary1" class="secondary-btn">Cancel</a>
+                </div>
+            </form>
+
+            <div class="action-row delete-row">
+                <form action="/diary1/<%= entry._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this entry?');">
+                    <button type="submit" class="danger-btn">Delete Entry</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

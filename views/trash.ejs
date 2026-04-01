@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>TRASH</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        <section class="panel-grid">
+            <article class="panel">
+                <% if (typeof error !== "undefined" && error === "diary2-duplicate") { %>
+                    <div class="alert alert-error">Cannot restore a Diary 2 entry when an active entry already exists for the same date.</div>
+                <% } %>
+
+                <div class="panel-heading">
+                    <h3>Diary 1 Deleted</h3>
+                    <span class="muted"><%= deletedDiary1.length %> entries</span>
+                </div>
+
+                <% if (!deletedDiary1.length) { %>
+                    <p class="empty-state">No deleted Diary 1 entries.</p>
+                <% } else { %>
+                    <div class="record-groups compact-record-groups">
+                        <% deletedDiary1.forEach((entry) => { %>
+                            <article class="record-card">
+                                <p><strong><%= entry.name %></strong> <span class="muted"><%= formatDateInput(entry.entryDate) %></span></p>
+                                <p><strong>City</strong> <%= entry.city %></p>
+                                <p><strong>Total</strong> <%= entry.total %></p>
+                                <form action="/diary1/<%= entry._id %>/restore" method="POST" class="action-row">
+                                    <button type="submit" class="primary-btn">Restore</button>
+                                </form>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <h3>Diary 2 Deleted</h3>
+                    <span class="muted"><%= deletedDiary2.length %> entries</span>
+                </div>
+
+                <% if (!deletedDiary2.length) { %>
+                    <p class="empty-state">No deleted Diary 2 entries.</p>
+                <% } else { %>
+                    <div class="day-card-list compact-day-card-list">
+                        <% deletedDiary2.forEach((entry) => { %>
+                            <article class="day-entry-card">
+                                <div class="record-day-header">
+                                    <h4><%= formatDateInput(entry.entryDate) %> <span class="muted"><%= entry.day %></span></h4>
+                                </div>
+                                <div class="diary2-compact-card">
+                                    <div class="diary2-summary-table">
+                                        <div class="summary-head">
+                                            <span class="rawal-head">Rawal</span>
+                                            <span>Dalni</span>
+                                            <span>Dabar</span>
+                                        </div>
+                                        <div class="summary-subhead">
+                                            <span>Mah</span>
+                                            <span>Out</span>
+                                            <span>Dalni</span>
+                                            <span>Dabar</span>
+                                        </div>
+                                        <div class="summary-values">
+                                            <span><%= entry.rawalForMachine %></span>
+                                            <span><%= entry.rawalForOutside %></span>
+                                            <span><%= entry.dalni %></span>
+                                            <span><%= entry.dabar %></span>
+                                        </div>
+                                    </div>
+                                    <form action="/diary2/<%= entry._id %>/restore" method="POST" class="action-row">
+                                        <button type="submit" class="primary-btn">Restore</button>
+                                    </form>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </article>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+    <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary 1</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>Diary 1</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-card">
+            <div class="hero-actions">
+                <a class="primary-btn" href="/diary1/new">Add Entry</a>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h3>All Entries</h3>
+                <span class="muted"><%= data.length %> records</span>
+            </div>
+
+            <% if (!data.length) { %>
+                <p class="empty-state">No entries yet. Start with the first Diary 1 entry.</p>
+            <% } else { %>
+                <% const groupedDiary1 = data.reduce((groups, entry) => {
+                    const key = formatDateInput(entry.entryDate);
+                    if (!groups[key]) {
+                        groups[key] = [];
+                    }
+                    groups[key].push(entry);
+                    return groups;
+                }, {}); %>
+
+                <div class="record-groups">
+                    <% Object.entries(groupedDiary1).forEach(([date, entries]) => { %>
+                        <article class="record-day">
+                            <div class="record-day-header">
+                                <h4><%= date %> <span class="muted"><%= entries[0].day %></span></h4>
+                            </div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Qt</th>
+                                            <th>Place</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% entries.forEach((entry) => { %>
+                                            <tr>
+                                                <td><a href="/diary1/<%= entry._id %>/edit" class="entry-link"><%= entry.name %></a></td>
+                                                <td class="qt-cell"><%= entry.quantity %><%= entry.vehicleType === "Tractor" ? "T" : "D" %></td>
+                                                <td><%= entry.city %></td>
+                                                <td>
+                                                    <%= entry.total %>
+                                                    <span class="payment-badge <%= entry.paidAmount >= entry.total ? 'paid-badge' : 'remaining-badge' %> amount-badge">
+                                                        <%= entry.paidAmount >= entry.total ? "Paid" : entry.paidAmount > 0 ? entry.total - entry.paidAmount : "Unpaid" %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } %>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+    <script src="/app.js"></script>
+</body>
+</html>

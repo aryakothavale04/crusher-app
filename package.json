@@ -1,0 +1,24 @@
+{
+  "name": "crusher-management-codex",
+  "version": "1.0.0",
+  "description": "Crusher management app for daily Diary 1 and Diary 2 operations",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"No automated tests configured yet\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "connect-mongo": "^6.0.0",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^9.3.3",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}

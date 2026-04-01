@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Diary 1 Entry</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>ADD ENTRY</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell narrow-shell">
+        <section class="panel">
+            <div class="panel-heading">
+                <h3>Diary 1 Form</h3>
+                <span class="muted">Capture customer, vehicle, and payment details in one place</span>
+            </div>
+
+            <form action="/diary1" method="POST" class="entry-form responsive-entry-form" id="diary1-form">
+                <div class="responsive-form-grid">
+                    <label>
+                        <span>Date</span>
+                        <input type="date" name="entryDate" value="<%= today %>" required>
+                    </label>
+
+                    <label>
+                        <span>Vehicle Type</span>
+                        <select name="vehicleType" required>
+                            <option value="Tractor" <%= values.vehicleType === "Tractor" ? "selected" : "" %>>Tractor</option>
+                            <option value="Dumper" <%= values.vehicleType === "Dumper" ? "selected" : "" %>>Dumper</option>
+                        </select>
+                    </label>
+
+                    <label class="field-span-full">
+                        <span>Name</span>
+                        <input type="text" name="name" placeholder="Customer name" value="<%= values.name %>" required>
+                    </label>
+
+                    <label class="field-span-full">
+                        <span>City</span>
+                        <input type="text" name="city" placeholder="City" value="<%= values.city %>" required>
+                    </label>
+
+                    <label>
+                        <span>Qt / Unit</span>
+                        <input type="number" name="quantity" step="0.01" min="0" placeholder="0" value="<%= values.quantity %>" required>
+                    </label>
+
+                    <label>
+                        <span>Rate Per Unit</span>
+                        <input type="number" name="rate" step="0.01" min="0" placeholder="0" value="<%= values.rate %>" required>
+                    </label>
+
+                    <label>
+                        <span>Payment</span>
+                        <select name="paymentStatus" id="payment-status" required>
+                            <option value="Unpaid" <%= values.paymentStatus === "Unpaid" ? "selected" : "" %>>Unpaid</option>
+                            <option value="Partial" <%= values.paymentStatus === "Partial" ? "selected" : "" %>>Partial</option>
+                            <option value="Paid" <%= values.paymentStatus === "Paid" ? "selected" : "" %>>Paid</option>
+                        </select>
+                    </label>
+
+                    <label id="paid-amount-field">
+                        <span>Paid Amount</span>
+                        <input type="number" name="paidAmount" id="paid-amount-input" step="0.01" min="0" placeholder="0" value="<%= values.paidAmount %>">
+                    </label>
+
+                    <div class="calculation-box form-sidecard field-span-full">
+                        <span>Auto Total</span>
+                        <strong id="diary1-total">0.00</strong>
+                    </div>
+                </div>
+
+                <div class="action-row form-actions">
+                    <button class="primary-btn" type="submit">Save Entry</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

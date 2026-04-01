@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crusher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a href="/dashboard" class="brand-mark">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <div class="page-title-block">
+                <h1>Dashboard</h1>
+            </div>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+            Menu
+        </button>
+        <nav class="nav-links" id="site-nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/diary1">Diary 1</a>
+            <a href="/diary2">Diary 2</a>
+            <a href="/trash">Trash</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        <section class="panel-grid">
+            <article class="panel">
+                <div class="panel-heading">
+                    <h3>Unpaid Entries</h3>
+                    <a href="/diary1">View all</a>
+                </div>
+
+                <% if (!pendingDiary1.length) { %>
+                    <p class="empty-state">No pending Diary 1 entries.</p>
+                <% } else { %>
+                    <% const groupedLatestDiary1 = pendingDiary1.reduce((groups, entry) => {
+                        const key = formatDateInput(entry.entryDate);
+                        if (!groups[key]) {
+                            groups[key] = [];
+                        }
+                        groups[key].push(entry);
+                        return groups;
+                    }, {}); %>
+
+                    <div class="record-groups compact-record-groups">
+                        <% Object.entries(groupedLatestDiary1).forEach(([date, entries]) => { %>
+                            <article class="record-day">
+                                <div class="record-day-header">
+                                    <h4><%= date %> <span class="muted"><%= entries[0].day %></span></h4>
+                                </div>
+                                <div class="table-wrap">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Qt</th>
+                                                <th>Place</th>
+                                                <th>Pending</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% entries.forEach((entry, index) => { %>
+                                                <tr>
+                                                    <td><a href="/diary1/<%= entry._id %>/edit" class="entry-link"><%= entry.name %></a></td>
+                                                    <td class="qt-cell"><%= entry.quantity %><%= entry.vehicleType === "Tractor" ? "T" : "D" %></td>
+                                                    <td><%= entry.city %></td>
+                                                    <td>
+                                                        <%= entry.total %>
+                                                        <span class="payment-badge remaining-badge amount-badge">
+                                                            <%= entry.paidAmount > 0 ? entry.total - entry.paidAmount : "Unpaid" %>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <h3>Diary 2 Weekly Total</h3>
+                    <a href="/diary2">View all</a>
+                </div>
+
+                <% if (!activeDiary2Week) { %>
+                    <p class="empty-state">No Diary 2 entries added yet.</p>
+                <% } else { %>
+                    <article class="weekly-total-panel">
+                        <div class="weekly-total-nav">
+                            <% if (newerDiary2Week) { %>
+                                <a href="/dashboard?week=<%= newerDiary2Week.weekKey %>" class="secondary-btn weekly-nav-btn">Newer Week</a>
+                            <% } else { %>
+                                <span class="secondary-btn weekly-nav-btn disabled-week-link">Newer Week</span>
+                            <% } %>
+
+                            <div class="weekly-total-range">
+                                <span class="eyebrow">Friday To Friday</span>
+                                <h4><%= formatDateInput(activeDiary2Week.weekStart) %> to <%= formatDateInput(activeDiary2Week.weekEnd) %></h4>
+                                <p class="muted"><%= activeDiary2Week.entryCount %> daily entries in this salary week</p>
+                            </div>
+
+                            <% if (olderDiary2Week) { %>
+                                <a href="/dashboard?week=<%= olderDiary2Week.weekKey %>" class="secondary-btn weekly-nav-btn">Previous Week</a>
+                            <% } else { %>
+                                <span class="secondary-btn weekly-nav-btn disabled-week-link">Previous Week</span>
+                            <% } %>
+                        </div>
+
+                        <div class="weekly-total-grid">
+                            <div class="weekly-total-item">
+                                <span>Rawal Mah</span>
+                                <strong><%= activeDiary2Week.rawalForMachine %></strong>
+                            </div>
+                            <div class="weekly-total-item">
+                                <span>Rawal Out</span>
+                                <strong><%= activeDiary2Week.rawalForOutside %></strong>
+                            </div>
+                            <div class="weekly-total-item">
+                                <span>Dalni</span>
+                                <strong><%= activeDiary2Week.dalni %></strong>
+                            </div>
+                            <div class="weekly-total-item">
+                                <span>Dabar</span>
+                                <strong><%= activeDiary2Week.dabar %></strong>
+                            </div>
+                            <div class="weekly-total-item">
+                                <span>Loader</span>
+                                <strong><%= activeDiary2Week.loaderQty %></strong>
+                            </div>
+                            <div class="weekly-total-item">
+                                <span>Holes</span>
+                                <strong><%= activeDiary2Week.holes %></strong>
+                            </div>
+                        </div>
+
+                        <div class="weekly-detail-layout">
+                            <section class="weekly-detail-card">
+                                <div class="weekly-detail-head">
+                                    <h5>Hawari Detail</h5>
+                                </div>
+                                <div class="hawari-weekly-sections">
+                                    <div class="hawari-weekly-block">
+                                        <span class="compact-label">Tractor</span>
+                                        <p>Ranga <strong><%= activeDiary2Week.hawariTotals.tractor.ranga %></strong></p>
+                                        <p>Piraji <strong><%= activeDiary2Week.hawariTotals.tractor.piraji %></strong></p>
+                                        <p>Dada <strong><%= activeDiary2Week.hawariTotals.tractor.dada %></strong></p>
+                                        <p>Rama <strong><%= activeDiary2Week.hawariTotals.tractor.rama %></strong></p>
+                                        <p>Other <strong><%= activeDiary2Week.hawariTotals.tractor.other %></strong></p>
+                                        <p class="hawari-weekly-total">Total <strong><%= activeDiary2Week.tractorHawari %></strong></p>
+                                    </div>
+                                    <div class="hawari-weekly-block">
+                                        <span class="compact-label">Dumper</span>
+                                        <p>Ranga <strong><%= activeDiary2Week.hawariTotals.dumper.ranga %></strong></p>
+                                        <p>Piraji <strong><%= activeDiary2Week.hawariTotals.dumper.piraji %></strong></p>
+                                        <p>Dada <strong><%= activeDiary2Week.hawariTotals.dumper.dada %></strong></p>
+                                        <p>Rama <strong><%= activeDiary2Week.hawariTotals.dumper.rama %></strong></p>
+                                        <p>Other <strong><%= activeDiary2Week.hawariTotals.dumper.other %></strong></p>
+                                        <p class="hawari-weekly-total">Total <strong><%= activeDiary2Week.dumperHawari %></strong></p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </article>
+                <% } %>
+            </article>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+    <script src="/app.js"></script>
+</body>
+</html>

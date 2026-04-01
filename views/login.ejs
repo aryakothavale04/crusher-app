@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crusher Management Verification</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="auth-body">
+    <main class="auth-shell">
+        <section class="auth-card">
+            <a href="/dashboard" class="brand-mark auth-brand">
+                <span class="brand-kicker">Crusher Management</span>
+                <span class="brand-name">KOTHAVALE CRUSHER</span>
+            </a>
+            <h1>Enter PIN</h1>
+
+            <% if (error) { %>
+                <div class="alert alert-error">Incorrect PIN.</div>
+            <% } %>
+
+            <form action="/login" method="POST" class="stack-form">
+                <label>
+                    <input type="password" name="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="****" required>
+                </label>
+
+                <button class="primary-btn" type="submit">Verify PIN</button>
+            </form>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>Made with &#10084; by Champ</p>
+    </footer>
+</body>
+</html>
