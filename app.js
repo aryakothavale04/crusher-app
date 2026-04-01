@@ -9,8 +9,8 @@ const { default: MongoStore } = require("connect-mongo");
 const Diary1 = require("./models/Diary1");
 const Diary2 = require("./models/Diary2");
 
-function loadEnvFile() {
-    const envPath = path.join(__dirname, ".env");
+function loadEnvFile(filename, overrideExisting = false) {
+    const envPath = path.join(__dirname, filename);
 
     if (!fs.existsSync(envPath)) {
         return;
@@ -34,13 +34,14 @@ function loadEnvFile() {
         const key = line.slice(0, separatorIndex).trim();
         const value = line.slice(separatorIndex + 1).trim();
 
-        if (key && process.env[key] === undefined) {
+        if (key && (overrideExisting || process.env[key] === undefined)) {
             process.env[key] = value;
         }
     }
 }
 
-loadEnvFile();
+loadEnvFile(".env");
+loadEnvFile(".env.local", true);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
