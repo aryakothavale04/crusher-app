@@ -51,7 +51,7 @@
                     <div class="record-groups compact-record-groups">
                         <% deletedDiary1.forEach((entry) => { %>
                             <article class="record-card">
-                                <p><strong><%= entry.name %></strong> <span class="muted"><%= formatDateInput(entry.entryDate) %></span></p>
+                                <p><strong><%= entry.name %></strong> <span class="muted"><%= formatDateDisplay(entry.entryDate) %></span></p>
                                 <p><strong>City</strong> <%= entry.city %></p>
                                 <p><strong>Total</strong> <%= entry.total %></p>
                                 <form action="/diary1/<%= entry._id %>/restore" method="POST" class="action-row">
@@ -76,7 +76,7 @@
                         <% deletedDiary2.forEach((entry) => { %>
                             <article class="day-entry-card">
                                 <div class="record-day-header">
-                                    <h4><%= formatDateInput(entry.entryDate) %> <span class="muted"><%= entry.day %></span></h4>
+                                    <h4><%= formatDateDisplay(entry.entryDate) %> <span class="muted"><%= entry.day %></span></h4>
                                 </div>
                                 <div class="diary2-compact-card">
                                     <div class="diary2-summary-table">

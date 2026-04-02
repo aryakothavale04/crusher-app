@@ -130,3 +130,33 @@ if (topbar && navToggle) {
         }
     });
 }
+
+const mutatingForms = Array.from(document.querySelectorAll("form"))
+    .filter((form) => (form.getAttribute("method") || "GET").toUpperCase() !== "GET");
+
+mutatingForms.forEach((form) => {
+    form.addEventListener("submit", (event) => {
+        if (form.dataset.submitting === "true") {
+            event.preventDefault();
+            return;
+        }
+
+        form.dataset.submitting = "true";
+
+        const submitButtons = Array.from(form.querySelectorAll('button[type="submit"], input[type="submit"]'));
+
+        submitButtons.forEach((button) => {
+            if (!button.dataset.originalLabel) {
+                button.dataset.originalLabel = button.tagName === "INPUT" ? button.value : button.textContent.trim();
+            }
+
+            button.disabled = true;
+
+            if (button.tagName === "INPUT") {
+                button.value = "Processing...";
+            } else {
+                button.textContent = "Processing...";
+            }
+        });
+    });
+});

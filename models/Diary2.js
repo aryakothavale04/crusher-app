@@ -76,6 +76,24 @@ const diary2Schema = new mongoose.Schema({
         required: true,
         min: 0
     },
+    loaderTractor: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
+    loaderDumper: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
+    tractorTrip: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
     salaryPaidToPiraji: {
         type: Number,
         required: true,

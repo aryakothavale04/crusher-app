@@ -64,34 +64,31 @@
                         <% } %>
                     </div>
 
-                    <div class="weekly-total-grid">
-                        <div class="weekly-total-item">
-                            <span>Rawal Mah</span>
-                            <strong><%= activeDiary2Week.rawalForMachine %></strong>
+                    <div class="diary2-compact-card">
+                        <div class="diary2-summary-table">
+                            <div class="summary-head">
+                                <span class="rawal-head">Rawal</span>
+                                <span>Dalni</span>
+                                <span>Dabar</span>
+                            </div>
+                            <div class="summary-subhead">
+                                <span>Mah</span>
+                                <span>Out</span>
+                                <span>Dalni</span>
+                                <span>Dabar</span>
+                            </div>
+                            <div class="summary-values">
+                                <span><%= activeDiary2Week.rawalForMachine %></span>
+                                <span><%= activeDiary2Week.rawalForOutside %></span>
+                                <span><%= activeDiary2Week.dalni %></span>
+                                <span><%= activeDiary2Week.dabar %></span>
+                            </div>
                         </div>
-                        <div class="weekly-total-item">
-                            <span>Rawal Out</span>
-                            <strong><%= activeDiary2Week.rawalForOutside %></strong>
-                        </div>
-                        <div class="weekly-total-item">
-                            <span>Dalni</span>
-                            <strong><%= activeDiary2Week.dalni %></strong>
-                        </div>
-                        <div class="weekly-total-item">
-                            <span>Dabar</span>
-                            <strong><%= activeDiary2Week.dabar %></strong>
-                        </div>
-                        <div class="weekly-total-item">
-                            <span>Loader</span>
-                            <strong><%= activeDiary2Week.loaderQty %></strong>
-                        </div>
-                        <div class="weekly-total-item">
-                            <span>Holes</span>
-                            <strong><%= activeDiary2Week.holes %></strong>
-                        </div>
-                        <div class="weekly-total-item">
-                            <span>Piraji Salary</span>
-                            <strong><%= activeDiary2Week.salaryPaidToPiraji %></strong>
+
+                        <div class="diary2-footer-lines">
+                            <p><strong>Loader --> </strong><strong>T</strong> - <%= activeDiary2Week.loaderTractor %> <strong>D</strong> - <%= activeDiary2Week.loaderDumper %></p>
+                            <p><strong>Holes</strong> - <%= activeDiary2Week.holes %></p>
+                            <p><strong>Tr Trip</strong> - <%= activeDiary2Week.tractorTrip %> <strong>Piraji Salary</strong> - <%= activeDiary2Week.salaryPaidToPiraji %></p>
                         </div>
                     </div>
 
@@ -100,25 +97,48 @@
                             <div class="weekly-detail-head">
                                 <h5>Hawari Detail</h5>
                             </div>
-                            <div class="hawari-weekly-sections">
-                                <div class="hawari-weekly-block">
-                                    <span class="compact-label">Tractor</span>
-                                    <p>Ranga <strong><%= activeDiary2Week.hawariTotals.tractor.ranga %></strong></p>
-                                    <p>Piraji <strong><%= activeDiary2Week.hawariTotals.tractor.piraji %></strong></p>
-                                    <p>Dada <strong><%= activeDiary2Week.hawariTotals.tractor.dada %></strong></p>
-                                    <p>Rama <strong><%= activeDiary2Week.hawariTotals.tractor.rama %></strong></p>
-                                    <p>Other <strong><%= activeDiary2Week.hawariTotals.tractor.other %></strong></p>
-                                    <p class="hawari-weekly-total">Total <strong><%= activeDiary2Week.tractorHawari %></strong></p>
-                                </div>
-                                <div class="hawari-weekly-block">
-                                    <span class="compact-label">Dumper</span>
-                                    <p>Ranga <strong><%= activeDiary2Week.hawariTotals.dumper.ranga %></strong></p>
-                                    <p>Piraji <strong><%= activeDiary2Week.hawariTotals.dumper.piraji %></strong></p>
-                                    <p>Dada <strong><%= activeDiary2Week.hawariTotals.dumper.dada %></strong></p>
-                                    <p>Rama <strong><%= activeDiary2Week.hawariTotals.dumper.rama %></strong></p>
-                                    <p>Other <strong><%= activeDiary2Week.hawariTotals.dumper.other %></strong></p>
-                                    <p class="hawari-weekly-total">Total <strong><%= activeDiary2Week.dumperHawari %></strong></p>
-                                </div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>T</th>
+                                            <th>D</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Ranga</td>
+                                            <td><%= activeDiary2Week.hawariTotals.tractor.ranga %></td>
+                                            <td><%= activeDiary2Week.hawariTotals.dumper.ranga %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Piraji</td>
+                                            <td><%= activeDiary2Week.hawariTotals.tractor.piraji %></td>
+                                            <td><%= activeDiary2Week.hawariTotals.dumper.piraji %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dada</td>
+                                            <td><%= activeDiary2Week.hawariTotals.tractor.dada %></td>
+                                            <td><%= activeDiary2Week.hawariTotals.dumper.dada %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rama</td>
+                                            <td><%= activeDiary2Week.hawariTotals.tractor.rama %></td>
+                                            <td><%= activeDiary2Week.hawariTotals.dumper.rama %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Other</td>
+                                            <td><%= activeDiary2Week.hawariTotals.tractor.other %></td>
+                                            <td><%= activeDiary2Week.hawariTotals.dumper.other %></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total</strong></td>
+                                            <td><strong><%= activeDiary2Week.tractorHawari %></strong></td>
+                                            <td><strong><%= activeDiary2Week.dumperHawari %></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </section>
                     </div>

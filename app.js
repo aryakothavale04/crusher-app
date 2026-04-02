@@ -66,10 +66,10 @@ const dateFormatter = new Intl.DateTimeFormat("en-CA", {
     month: "2-digit",
     day: "2-digit"
 });
-const reportDateFormatter = new Intl.DateTimeFormat("en-GB", {
+const dateDisplayFormatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: "UTC",
-    year: "numeric",
-    month: "short",
+    year: "2-digit",
+    month: "2-digit",
     day: "2-digit"
 });
 
@@ -95,6 +95,14 @@ function formatDateInput(value) {
     return dateFormatter.format(value);
 }
 
+function formatDateDisplay(value) {
+    if (!value) {
+        return "";
+    }
+
+    return dateDisplayFormatter.format(value);
+}
+
 function formatReportDateRange(startValue, endValueExclusive) {
     const start = startValue instanceof Date ? new Date(startValue.getTime()) : normalizeDateOnly(startValue);
     const endExclusive = endValueExclusive instanceof Date
@@ -108,7 +116,7 @@ function formatReportDateRange(startValue, endValueExclusive) {
     const inclusiveEnd = new Date(endExclusive.getTime());
     inclusiveEnd.setUTCDate(inclusiveEnd.getUTCDate() - 1);
 
-    return `${reportDateFormatter.format(start)} to ${reportDateFormatter.format(inclusiveEnd)}`;
+    return `${formatDateDisplay(start)} to ${formatDateDisplay(inclusiveEnd)}`;
 }
 
 const ACTIVE_FILTER = { deletedAt: null };
@@ -155,7 +163,10 @@ function buildDiary2WeeklySummaries(entries) {
                 dalni: 0,
                 dabar: 0,
                 loaderQty: 0,
+                loaderTractor: 0,
+                loaderDumper: 0,
                 holes: 0,
+                tractorTrip: 0,
                 salaryPaidToPiraji: 0,
                 tractorHawari: 0,
                 dumperHawari: 0,
@@ -197,8 +208,14 @@ function buildDiary2WeeklySummaries(entries) {
         weekSummary.rawalTotal += (entry.rawalForMachine || 0) + (entry.rawalForOutside || 0);
         weekSummary.dalni += entry.dalni || 0;
         weekSummary.dabar += entry.dabar || 0;
-        weekSummary.loaderQty += entry.loaderQty || 0;
+        const loaderTractor = entry.loaderTractor ?? entry.loaderQty ?? 0;
+        const loaderDumper = entry.loaderDumper ?? 0;
+
+        weekSummary.loaderQty += (entry.loaderQty ?? (loaderTractor + loaderDumper)) || 0;
+        weekSummary.loaderTractor += loaderTractor;
+        weekSummary.loaderDumper += loaderDumper;
         weekSummary.holes += entry.holes || 0;
+        weekSummary.tractorTrip += entry.tractorTrip || 0;
         weekSummary.salaryPaidToPiraji += entry.salaryPaidToPiraji || 0;
         weekSummary.tractorHawari += tractorHawari;
         weekSummary.dumperHawari += dumperHawari;
@@ -271,7 +288,9 @@ function getDiary2FormData(entry = {}) {
                 other: entry.dumperHawari?.other ?? 0
             },
             holes: entry.holes ?? 0,
-            loaderQty: entry.loaderQty ?? 0,
+            loaderTractor: entry.loaderTractor ?? entry.loaderQty ?? 0,
+            loaderDumper: entry.loaderDumper ?? 0,
+            tractorTrip: entry.tractorTrip ?? 0,
             salaryPaidToPiraji: entry.salaryPaidToPiraji ?? 0
         }
     };
@@ -353,6 +372,7 @@ app.use(session({
 app.use((req, res, next) => {
     res.locals.currentUser = req.session.isVerified ? { role: "admin" } : null;
     res.locals.formatDateInput = formatDateInput;
+    res.locals.formatDateDisplay = formatDateDisplay;
     res.locals.getDayName = getDayName;
     next();
 });
@@ -548,12 +568,17 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
         dumperRama,
         dumperOther,
         holes,
-        loaderQty,
+        loaderTractor,
+        loaderDumper,
+        tractorTrip,
         salaryPaidToPiraji
     } = req.body;
 
     const normalizedDate = normalizeDateOnly(entryDate);
     const existingEntry = await Diary2.findOne({ entryDate: normalizedDate, ...ACTIVE_FILTER });
+
+    const normalizedLoaderTractor = Number(loaderTractor) || 0;
+    const normalizedLoaderDumper = Number(loaderDumper) || 0;
 
     const payload = {
         entryDate: normalizedDate,
@@ -577,7 +602,10 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
             other: Number(dumperOther) || 0
         },
         holes: Number(holes) || 0,
-        loaderQty: Number(loaderQty) || 0,
+        loaderQty: normalizedLoaderTractor + normalizedLoaderDumper,
+        loaderTractor: normalizedLoaderTractor,
+        loaderDumper: normalizedLoaderDumper,
+        tractorTrip: Number(tractorTrip) || 0,
         salaryPaidToPiraji: Number(salaryPaidToPiraji) || 0
     };
 
@@ -608,7 +636,9 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
         dumperRama,
         dumperOther,
         holes,
-        loaderQty,
+        loaderTractor,
+        loaderDumper,
+        tractorTrip,
         salaryPaidToPiraji
     } = req.body;
 
@@ -641,7 +671,10 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
         other: Number(dumperOther) || 0
     };
     entry.holes = Number(holes) || 0;
-    entry.loaderQty = Number(loaderQty) || 0;
+    entry.loaderTractor = Number(loaderTractor) || 0;
+    entry.loaderDumper = Number(loaderDumper) || 0;
+    entry.loaderQty = entry.loaderTractor + entry.loaderDumper;
+    entry.tractorTrip = Number(tractorTrip) || 0;
     entry.salaryPaidToPiraji = Number(salaryPaidToPiraji) || 0;
 
     await entry.save();

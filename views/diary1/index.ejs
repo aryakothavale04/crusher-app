@@ -50,7 +50,7 @@
                 <p class="empty-state">No entries yet. Start with the first Diary 1 entry.</p>
             <% } else { %>
                 <% const groupedDiary1 = data.reduce((groups, entry) => {
-                    const key = formatDateInput(entry.entryDate);
+                    const key = formatDateDisplay(entry.entryDate);
                     if (!groups[key]) {
                         groups[key] = [];
                     }
