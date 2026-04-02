@@ -18,7 +18,7 @@
                 <span class="brand-name">KOTHAVALE CRUSHER</span>
             </a>
             <div class="page-title-block">
-                <h1>EDIT ENTRY</h1>
+                <h1>Edit Entry</h1>
             </div>
         </div>
         <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
@@ -37,7 +37,7 @@
         <section class="panel">
             <div class="panel-heading">
                 <h3>Diary 2 Form</h3>
-                <span class="muted">Update daily site work</span>
+                <span class="muted">Update daily site work and activity details.</span>
             </div>
 
             <form action="/diary2/<%= entry._id %>?_method=PUT" method="POST" class="entry-form" id="diary2-form">
@@ -47,12 +47,12 @@
                 </label>
 
                 <label>
-                    <span>Rawal For Mah</span>
+                    <span>Rawal for Machine</span>
                     <input type="number" name="rawalForMachine" id="rawal-for-machine" min="0" placeholder="0" value="<%= values.rawalForMachine %>" required>
                 </label>
 
                 <label>
-                    <span>Rawal For Out</span>
+                    <span>Rawal for Outside</span>
                     <input type="number" name="rawalForOutside" min="0" placeholder="0" value="<%= values.rawalForOutside %>" required>
                 </label>
 
@@ -123,7 +123,7 @@
                 </section>
 
                 <label>
-                    <span>How Many Hole</span>
+                    <span>Number of Holes</span>
                     <input type="number" name="holes" min="0" placeholder="0" value="<%= values.holes %>" required>
                 </label>
 
@@ -143,7 +143,7 @@
                 </label>
 
                 <label>
-                    <span>Salary Paid To Piraji</span>
+                    <span>Salary Paid to Piraji</span>
                     <input type="number" name="salaryPaidToPiraji" min="0" placeholder="0" value="<%= values.salaryPaidToPiraji %>" required>
                 </label>
 

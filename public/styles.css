@@ -232,6 +232,15 @@ a {
     margin-bottom: 18px;
 }
 
+.keep-inline-heading {
+    flex-wrap: nowrap;
+}
+
+.keep-inline-heading a {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
 .eyebrow {
     margin: 0 0 8px;
     color: var(--primary-dark);
@@ -1036,3 +1045,9 @@ th {
         grid-column: span 4;
     }
 }
+    .keep-inline-heading {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }

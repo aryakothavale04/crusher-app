@@ -36,12 +36,12 @@
     <main class="page-shell">
         <section class="panel">
             <div class="panel-heading">
-                <h3>Friday To Friday Report</h3>
+                <h3>Friday-to-Friday Report</h3>
                 <a href="/diary2">Back to Diary 2</a>
             </div>
 
             <% if (!activeDiary2Week) { %>
-                <p class="empty-state">No Diary 2 entries added yet.</p>
+                <p class="empty-state">No Diary 2 entries have been added yet.</p>
             <% } else { %>
                 <article class="weekly-total-panel">
                     <div class="weekly-total-nav">
@@ -54,7 +54,6 @@
                         <div class="weekly-total-range">
                             <span class="eyebrow">Salary Week</span>
                             <h4><%= activeDiary2Week.weekLabel %></h4>
-                            <p class="muted"><%= activeDiary2Week.entryCount %> daily entries in this salary week</p>
                         </div>
 
                         <% if (olderDiary2Week) { %>

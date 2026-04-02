@@ -38,9 +38,9 @@
     <main class="page-shell">
         <section class="panel-grid">
             <article class="panel">
-                <div class="panel-heading">
+                <div class="panel-heading keep-inline-heading">
                     <h3>Unpaid Entries</h3>
-                    <a href="/diary1">View all</a>
+                    <a href="/diary1" class="inline-edit-link">View all</a>
                 </div>
 
                 <% if (!pendingDiary1.length) { %>
@@ -109,13 +109,13 @@
             </article>
 
             <article class="panel">
-                <div class="panel-heading">
+                <div class="panel-heading keep-inline-heading">
                     <h3>Diary 2 Weekly Total</h3>
-                    <a href="/diary2">View all</a>
+                    <a href="/diary2" class="inline-edit-link">View all</a>
                 </div>
 
                 <% if (!activeDiary2Week) { %>
-                    <p class="empty-state">No Diary 2 entries added yet.</p>
+                    <p class="empty-state">No Diary 2 entries have been added yet.</p>
                     <% } else { %>
                         <article class="weekly-total-panel">
                             <div class="weekly-total-nav">
@@ -131,9 +131,6 @@
                                                 <h4>
                                                     <%= activeDiary2Week.weekLabel %>
                                                 </h4>
-                                                <p class="muted">
-                                                    <%= activeDiary2Week.entryCount %> daily entries in this salary week
-                                                </p>
                                             </div>
 
                                             <% if (olderDiary2Week) { %>

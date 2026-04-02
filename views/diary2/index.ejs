@@ -48,7 +48,7 @@
             </div>
 
             <% if (!data.length) { %>
-                <p class="empty-state">No entries yet. Add the first Diary 2 summary.</p>
+                <p class="empty-state">No entries yet. Add your first Diary 2 entry.</p>
             <% } else { %>
                 <div class="day-card-list">
                     <% data.forEach((entry) => { %>
@@ -89,7 +89,7 @@
                                     <p><strong>Loader -> </strong><strong>T</strong> - <%= entry.loaderTractor ?? entry.loaderQty ?? 0 %> <strong>D</strong> - <%= entry.loaderDumper ?? 0 %></p>
                                     <p><strong>Holes</strong> - <%= entry.holes %></p>
                                     <p><strong>Tr Trip</strong> - <%= entry.tractorTrip || 0 %></p>
-                                    <p><strong>Piraji Salary</strong> - <%= entry.salaryPaidToPiraji || 0 %></p>
+                                    <p><strong>Salary Paid to Piraji</strong> - <%= entry.salaryPaidToPiraji || 0 %></p>
                                 </div>
                             </div>
                         </article>
