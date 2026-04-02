@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <meta name="theme-color" content="#0b1838">
     <link rel="stylesheet" href="/styles.css">
 </head>
+
 <body>
     <header class="topbar">
         <div class="topbar-main">
@@ -43,53 +45,67 @@
 
                 <% if (!pendingDiary1.length) { %>
                     <p class="empty-state">No pending Diary 1 entries.</p>
-                <% } else { %>
-                    <% const groupedLatestDiary1 = pendingDiary1.reduce((groups, entry) => {
-                        const key = formatDateDisplay(entry.entryDate);
-                        if (!groups[key]) {
+                    <% } else { %>
+                        <% const groupedLatestDiary1=pendingDiary1.reduce((groups, entry)=> {
+                            const key = formatDateDisplay(entry.entryDate);
+                            if (!groups[key]) {
                             groups[key] = [];
-                        }
-                        groups[key].push(entry);
-                        return groups;
-                    }, {}); %>
+                            }
+                            groups[key].push(entry);
+                            return groups;
+                            }, {}); %>
 
-                    <div class="record-groups compact-record-groups">
-                        <% Object.entries(groupedLatestDiary1).forEach(([date, entries]) => { %>
-                            <article class="record-day">
-                                <div class="record-day-header">
-                                    <h4><%= date %> <span class="muted"><%= entries[0].day %></span></h4>
-                                </div>
-                                <div class="table-wrap">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Qt</th>
-                                                <th>Place</th>
-                                                <th>Pending</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% entries.forEach((entry, index) => { %>
-                                                <tr>
-                                                    <td><a href="/diary1/<%= entry._id %>/edit" class="entry-link"><%= entry.name %></a></td>
-                                                    <td class="qt-cell"><%= entry.quantity %><%= entry.vehicleType === "Tractor" ? "T" : "D" %></td>
-                                                    <td><%= entry.city %></td>
-                                                    <td>
-                                                        <%= entry.total %>
-                                                        <span class="payment-badge remaining-badge amount-badge">
-                                                            <%= entry.paidAmount > 0 ? entry.total - entry.paidAmount : "Unpaid" %>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            <% }) %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </article>
-                        <% }) %>
-                    </div>
-                <% } %>
+                            <div class="record-groups compact-record-groups">
+                                <% Object.entries(groupedLatestDiary1).forEach(([date, entries])=> { %>
+                                    <article class="record-day">
+                                        <div class="record-day-header">
+                                            <h4>
+                                                <%= date %> <span class="muted">
+                                                        <%= entries[0].day %>
+                                                    </span>
+                                            </h4>
+                                        </div>
+                                        <div class="table-wrap">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Qt</th>
+                                                        <th>Place</th>
+                                                        <th>Pending</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% entries.forEach((entry, index)=> { %>
+                                                        <tr>
+                                                            <td><a href="/diary1/<%= entry._id %>/edit"
+                                                                    class="entry-link">
+                                                                    <%= entry.name %>
+                                                                </a></td>
+                                                            <td class="qt-cell">
+                                                                <%= entry.quantity %>
+                                                                    <%= entry.vehicleType==="Tractor" ? "T" : "D" %>
+                                                            </td>
+                                                            <td>
+                                                                <%= entry.city %>
+                                                            </td>
+                                                            <td>
+                                                                <%= entry.total %>
+                                                                    <span
+                                                                        class="payment-badge remaining-badge amount-badge">
+                                                                        <%= entry.paidAmount> 0 ? entry.total -
+                                                                            entry.paidAmount : "Unpaid" %>
+                                                                    </span>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </article>
+                                    <% }) %>
+                            </div>
+                            <% } %>
             </article>
 
             <article class="panel">
@@ -100,109 +116,155 @@
 
                 <% if (!activeDiary2Week) { %>
                     <p class="empty-state">No Diary 2 entries added yet.</p>
-                <% } else { %>
-                    <article class="weekly-total-panel">
-                        <div class="weekly-total-nav">
-                            <% if (newerDiary2Week) { %>
-                                <a href="/dashboard?week=<%= newerDiary2Week.weekKey %>" class="secondary-btn weekly-nav-btn">Newer Week</a>
-                            <% } else { %>
-                                <span class="secondary-btn weekly-nav-btn disabled-week-link">Newer Week</span>
-                            <% } %>
+                    <% } else { %>
+                        <article class="weekly-total-panel">
+                            <div class="weekly-total-nav">
+                                <% if (newerDiary2Week) { %>
+                                    <a href="/dashboard?week=<%= newerDiary2Week.weekKey %>"
+                                        class="secondary-btn weekly-nav-btn">Newer Week</a>
+                                    <% } else { %>
+                                        <span class="secondary-btn weekly-nav-btn disabled-week-link">Newer Week</span>
+                                        <% } %>
 
-                            <div class="weekly-total-range">
-                                <span class="eyebrow">Salary Week</span>
-                                <h4><%= activeDiary2Week.weekLabel %></h4>
-                                <p class="muted"><%= activeDiary2Week.entryCount %> daily entries in this salary week</p>
+                                            <div class="weekly-total-range">
+                                                <span class="eyebrow">Salary Week</span>
+                                                <h4>
+                                                    <%= activeDiary2Week.weekLabel %>
+                                                </h4>
+                                                <p class="muted">
+                                                    <%= activeDiary2Week.entryCount %> daily entries in this salary week
+                                                </p>
+                                            </div>
+
+                                            <% if (olderDiary2Week) { %>
+                                                <a href="/dashboard?week=<%= olderDiary2Week.weekKey %>"
+                                                    class="secondary-btn weekly-nav-btn">Previous Week</a>
+                                                <% } else { %>
+                                                    <span
+                                                        class="secondary-btn weekly-nav-btn disabled-week-link">Previous
+                                                        Week</span>
+                                                    <% } %>
                             </div>
 
-                            <% if (olderDiary2Week) { %>
-                                <a href="/dashboard?week=<%= olderDiary2Week.weekKey %>" class="secondary-btn weekly-nav-btn">Previous Week</a>
-                            <% } else { %>
-                                <span class="secondary-btn weekly-nav-btn disabled-week-link">Previous Week</span>
-                            <% } %>
-                        </div>
+                            <div class="diary2-compact-card">
+                                <div class="diary2-summary-table">
+                                    <div class="summary-head">
+                                        <span class="rawal-head">Rawal</span>
+                                        <span>Dalni</span>
+                                        <span>Dabar</span>
+                                    </div>
+                                    <div class="summary-subhead">
+                                        <span>Mah</span>
+                                        <span>Out</span>
+                                        <span>Dalni</span>
+                                        <span>Dabar</span>
+                                    </div>
+                                    <div class="summary-values">
+                                        <span>
+                                            <%= activeDiary2Week.rawalForMachine %>
+                                        </span>
+                                        <span>
+                                            <%= activeDiary2Week.rawalForOutside %>
+                                        </span>
+                                        <span>
+                                            <%= activeDiary2Week.dalni %>
+                                        </span>
+                                        <span>
+                                            <%= activeDiary2Week.dabar %>
+                                        </span>
+                                    </div>
+                                </div>
 
-                        <div class="diary2-compact-card">
-                            <div class="diary2-summary-table">
-                                <div class="summary-head">
-                                    <span class="rawal-head">Rawal</span>
-                                    <span>Dalni</span>
-                                    <span>Dabar</span>
-                                </div>
-                                <div class="summary-subhead">
-                                    <span>Mah</span>
-                                    <span>Out</span>
-                                    <span>Dalni</span>
-                                    <span>Dabar</span>
-                                </div>
-                                <div class="summary-values">
-                                    <span><%= activeDiary2Week.rawalForMachine %></span>
-                                    <span><%= activeDiary2Week.rawalForOutside %></span>
-                                    <span><%= activeDiary2Week.dalni %></span>
-                                    <span><%= activeDiary2Week.dabar %></span>
+                                <div class="diary2-footer-lines">
+                                    <p><strong>Loader -> </strong><strong>T</strong> - <%=
+                                            activeDiary2Week.loaderTractor %> <strong>D</strong> - <%=
+                                                activeDiary2Week.loaderDumper %>
+                                    </p>
+                                    <p><strong>Holes</strong> - <%= activeDiary2Week.holes %>
+                                    </p>
+                                    <p><strong>Tr Trip</strong> - <%= activeDiary2Week.tractorTrip %>
+                                    </p>
+                                    <p><strong>Piraji Salary</strong> - <%= activeDiary2Week.salaryPaidToPiraji %>
+                                    </p>
                                 </div>
                             </div>
 
-                            <div class="diary2-footer-lines">
-                                <p><strong>Loader -> </strong><strong>T</strong> - <%= activeDiary2Week.loaderTractor %> <strong>D</strong> - <%= activeDiary2Week.loaderDumper %></p>
-                                <p><strong>Holes</strong> - <%= activeDiary2Week.holes %></p>
-                                <p><strong>Tr Trip</strong> - <%= activeDiary2Week.tractorTrip %> </p>
-                                <p><strong>Piraji Salary</strong> - <%= activeDiary2Week.salaryPaidToPiraji %></p>
+                            <div class="weekly-detail-layout">
+                                <section class="weekly-detail-card">
+                                    <div class="weekly-detail-head">
+                                        <h5>Hawari Detail</h5>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>T</th>
+                                                    <th>D</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Ranga</td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.tractor.ranga %>
+                                                    </td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.dumper.ranga %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Piraji</td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.tractor.piraji %>
+                                                    </td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.dumper.piraji %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Dada</td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.tractor.dada %>
+                                                    </td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.dumper.dada %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Rama</td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.tractor.rama %>
+                                                    </td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.dumper.rama %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Other</td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.tractor.other %>
+                                                    </td>
+                                                    <td>
+                                                        <%= activeDiary2Week.hawariTotals.dumper.other %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Total</strong></td>
+                                                    <td><strong>
+                                                            <%= activeDiary2Week.tractorHawari %>
+                                                        </strong></td>
+                                                    <td><strong>
+                                                            <%= activeDiary2Week.dumperHawari %>
+                                                        </strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
                             </div>
-                        </div>
-
-                        <div class="weekly-detail-layout">
-                            <section class="weekly-detail-card">
-                                <div class="weekly-detail-head">
-                                    <h5>Hawari Detail</h5>
-                                </div>
-                                <div class="table-wrap">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>T</th>
-                                                <th>D</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Ranga</td>
-                                                <td><%= activeDiary2Week.hawariTotals.tractor.ranga %></td>
-                                                <td><%= activeDiary2Week.hawariTotals.dumper.ranga %></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Piraji</td>
-                                                <td><%= activeDiary2Week.hawariTotals.tractor.piraji %></td>
-                                                <td><%= activeDiary2Week.hawariTotals.dumper.piraji %></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Dada</td>
-                                                <td><%= activeDiary2Week.hawariTotals.tractor.dada %></td>
-                                                <td><%= activeDiary2Week.hawariTotals.dumper.dada %></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Rama</td>
-                                                <td><%= activeDiary2Week.hawariTotals.tractor.rama %></td>
-                                                <td><%= activeDiary2Week.hawariTotals.dumper.rama %></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Other</td>
-                                                <td><%= activeDiary2Week.hawariTotals.tractor.other %></td>
-                                                <td><%= activeDiary2Week.hawariTotals.dumper.other %></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Total</strong></td>
-                                                <td><strong><%= activeDiary2Week.tractorHawari %></strong></td>
-                                                <td><strong><%= activeDiary2Week.dumperHawari %></strong></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </section>
-                        </div>
-                    </article>
-                <% } %>
+                        </article>
+                        <% } %>
             </article>
         </section>
     </main>
@@ -211,4 +273,5 @@
     </footer>
     <script src="/app.js"></script>
 </body>
+
 </html>
