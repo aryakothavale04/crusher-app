@@ -142,6 +142,9 @@ a {
 
 .nav-links a,
 .secondary-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     padding: 10px 16px;
     border-radius: 999px;
     border: 1px solid var(--line);
@@ -531,6 +534,12 @@ th {
     align-items: center;
 }
 
+.action-row .primary-btn,
+.action-row .secondary-btn,
+.action-row .danger-btn {
+    width: auto;
+}
+
 .delete-row {
     margin-top: 16px;
 }
@@ -900,7 +909,7 @@ th {
     }
 
     .nav-links a,
-    .secondary-btn {
+    .nav-links .secondary-btn {
         width: 100%;
         min-height: 44px;
         padding: 11px 12px;

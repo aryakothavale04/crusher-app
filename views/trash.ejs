@@ -42,7 +42,14 @@
 
                 <div class="panel-heading">
                     <h3>Diary 1 Deleted</h3>
-                    <span class="muted"><%= deletedDiary1.length %> entries</span>
+                    <div class="action-row">
+                        <span class="muted"><%= deletedDiary1.length %> entries</span>
+                        <% if (deletedDiary1.length) { %>
+                            <form action="/trash/diary1?_method=DELETE" method="POST" onsubmit="return confirm('Permanently delete all Diary 1 trash?');">
+                                <button type="submit" class="danger-btn">Empty Trash</button>
+                            </form>
+                        <% } %>
+                    </div>
                 </div>
 
                 <% if (!deletedDiary1.length) { %>
@@ -56,6 +63,7 @@
                                 <p><strong>Total</strong> <%= entry.total %></p>
                                 <form action="/diary1/<%= entry._id %>/restore" method="POST" class="action-row">
                                     <button type="submit" class="primary-btn">Restore</button>
+                                    <button type="submit" formaction="/diary1/<%= entry._id %>/permanent?_method=DELETE" formmethod="POST" class="danger-btn" onclick="return confirm('Permanently delete this Diary 1 entry?');">Delete Forever</button>
                                 </form>
                             </article>
                         <% }) %>
@@ -66,7 +74,14 @@
             <article class="panel">
                 <div class="panel-heading">
                     <h3>Diary 2 Deleted</h3>
-                    <span class="muted"><%= deletedDiary2.length %> entries</span>
+                    <div class="action-row">
+                        <span class="muted"><%= deletedDiary2.length %> entries</span>
+                        <% if (deletedDiary2.length) { %>
+                            <form action="/trash/diary2?_method=DELETE" method="POST" onsubmit="return confirm('Permanently delete all Diary 2 trash?');">
+                                <button type="submit" class="danger-btn">Empty Trash</button>
+                            </form>
+                        <% } %>
+                    </div>
                 </div>
 
                 <% if (!deletedDiary2.length) { %>
@@ -100,6 +115,7 @@
                                     </div>
                                     <form action="/diary2/<%= entry._id %>/restore" method="POST" class="action-row">
                                         <button type="submit" class="primary-btn">Restore</button>
+                                        <button type="submit" formaction="/diary2/<%= entry._id %>/permanent?_method=DELETE" formmethod="POST" class="danger-btn" onclick="return confirm('Permanently delete this Diary 2 entry?');">Delete Forever</button>
                                     </form>
                                 </div>
                             </article>

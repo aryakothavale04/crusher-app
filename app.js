@@ -524,6 +524,16 @@ app.post("/diary1/:id/restore", isLoggedIn, async (req, res) => {
     res.redirect("/trash");
 });
 
+app.delete("/diary1/:id/permanent", isLoggedIn, async (req, res) => {
+    await Diary1.findOneAndDelete({ _id: req.params.id, deletedAt: { $ne: null } });
+    res.redirect("/trash");
+});
+
+app.delete("/trash/diary1", isLoggedIn, async (req, res) => {
+    await Diary1.deleteMany({ deletedAt: { $ne: null } });
+    res.redirect("/trash");
+});
+
 app.get("/diary2", isLoggedIn, async (req, res) => {
     const data = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     res.render("diary2/index", { data });
@@ -705,6 +715,16 @@ app.post("/diary2/:id/restore", isLoggedIn, async (req, res) => {
     }
 
     await Diary2.findByIdAndUpdate(req.params.id, { deletedAt: null });
+    res.redirect("/trash");
+});
+
+app.delete("/diary2/:id/permanent", isLoggedIn, async (req, res) => {
+    await Diary2.findOneAndDelete({ _id: req.params.id, deletedAt: { $ne: null } });
+    res.redirect("/trash");
+});
+
+app.delete("/trash/diary2", isLoggedIn, async (req, res) => {
+    await Diary2.deleteMany({ deletedAt: { $ne: null } });
     res.redirect("/trash");
 });
 
