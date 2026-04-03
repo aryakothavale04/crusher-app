@@ -59,38 +59,64 @@
                             </div>
 
                             <div class="diary2-compact-card">
-                                <div class="diary2-summary-table">
-                                    <div class="summary-head">
-                                        <span class="rawal-head">Rawal</span>
-                                        <span>Dalni</span>
-                                        <span>Dabar</span>
-                                    </div>
-                                    <div class="summary-subhead">
-                                        <span>Mah</span>
-                                        <span>Out</span>
-                                        <span>Dalni</span>
-                                        <span>Dabar</span>
-                                    </div>
-                                    <div class="summary-values">
-                                        <span><%= entry.rawalForMachine %></span>
-                                        <span><%= entry.rawalForOutside %></span>
-                                        <span><%= entry.dalni %></span>
-                                        <span><%= entry.dabar %></span>
-                                    </div>
-                                </div>
-
-                                <div class="diary2-hawari-block">
-                                    <span class="compact-label">Hawari</span>
-                                    <p><strong>T</strong> Rg <%= entry.tractorHawari.ranga %>, Pi <%= entry.tractorHawari.piraji %>, Da <%= entry.tractorHawari.dada %>, Ra <%= entry.tractorHawari.rama %>, O <%= entry.tractorHawari.other %></p>
-                                    <p><strong>D</strong> Rg <%= entry.dumperHawari.ranga %>, Pi <%= entry.dumperHawari.piraji %>, Da <%= entry.dumperHawari.dada %>, Ra <%= entry.dumperHawari.rama %>, O <%= entry.dumperHawari.other %></p>
-                                </div>
-
-                                <div class="diary2-footer-lines">
-                                    <p><strong>Loader -> </strong><strong>T</strong> - <%= entry.loaderTractor ?? entry.loaderQty ?? 0 %> <strong>D</strong> - <%= entry.loaderDumper ?? 0 %></p>
+                                <div class="diary2-summary-block">
+                                    <p><strong>Rawal M</strong> - <%= entry.rawalForMachine %> <strong>O</strong> - <%= entry.rawalForOutside %></p>
+                                    <p><strong>Dalni</strong> - <%= entry.dalni %></p>
+                                    <p><strong>Dabar</strong> - <%= entry.dabar %></p>
+                                    <p><strong>Loader</strong> -> <strong>T</strong> - <%= entry.loaderTractor ?? entry.loaderQty ?? 0 %> <strong>D</strong> - <%= entry.loaderDumper ?? 0 %></p>
                                     <p><strong>Holes</strong> - <%= entry.holes %></p>
                                     <p><strong>Tr Trip</strong> - <%= entry.tractorTrip || 0 %></p>
-                                    <p><strong>Salary Paid to Piraji</strong> - <%= entry.salaryPaidToPiraji || 0 %></p>
+                                    <p><strong>Piraji Salary</strong> - <%= entry.salaryPaidToPiraji || 0 %></p>
                                 </div>
+
+                                <section class="weekly-detail-card">
+                                    <div class="weekly-detail-head">
+                                        <h5>Hawari Detail</h5>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="compact-info-table hawari-detail-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>T</th>
+                                                    <th>D</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Ranga</td>
+                                                    <td><%= entry.tractorHawari.ranga %></td>
+                                                    <td><%= entry.dumperHawari.ranga %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Piraji</td>
+                                                    <td><%= entry.tractorHawari.piraji %></td>
+                                                    <td><%= entry.dumperHawari.piraji %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Dada</td>
+                                                    <td><%= entry.tractorHawari.dada %></td>
+                                                    <td><%= entry.dumperHawari.dada %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Rama</td>
+                                                    <td><%= entry.tractorHawari.rama %></td>
+                                                    <td><%= entry.dumperHawari.rama %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Other</td>
+                                                    <td><%= entry.tractorHawari.other %></td>
+                                                    <td><%= entry.dumperHawari.other %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Total</strong></td>
+                                                    <td><strong><%= (entry.tractorHawari.ranga || 0) + (entry.tractorHawari.piraji || 0) + (entry.tractorHawari.dada || 0) + (entry.tractorHawari.rama || 0) + (entry.tractorHawari.other || 0) %></strong></td>
+                                                    <td><strong><%= (entry.dumperHawari.ranga || 0) + (entry.dumperHawari.piraji || 0) + (entry.dumperHawari.dada || 0) + (entry.dumperHawari.rama || 0) + (entry.dumperHawari.other || 0) %></strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
                             </div>
                         </article>
                     <% }) %>
