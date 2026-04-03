@@ -160,3 +160,48 @@ mutatingForms.forEach((form) => {
         });
     });
 });
+
+const weekPickerTriggers = Array.from(document.querySelectorAll("[data-week-picker-open]"));
+
+weekPickerTriggers.forEach((trigger) => {
+    const dialogId = trigger.getAttribute("data-week-picker-open");
+    const dialog = dialogId ? document.getElementById(dialogId) : null;
+
+    if (!dialog) {
+        return;
+    }
+
+    trigger.addEventListener("click", () => {
+        if (typeof dialog.showModal === "function") {
+            dialog.showModal();
+        }
+    });
+
+    dialog.addEventListener("click", (event) => {
+        const rect = dialog.getBoundingClientRect();
+        const isInside =
+            event.clientX >= rect.left
+            && event.clientX <= rect.right
+            && event.clientY >= rect.top
+            && event.clientY <= rect.bottom;
+
+        if (!isInside) {
+            dialog.close();
+        }
+    });
+});
+
+const weekPickerCloseButtons = Array.from(document.querySelectorAll("[data-week-picker-close]"));
+
+weekPickerCloseButtons.forEach((button) => {
+    const dialogId = button.getAttribute("data-week-picker-close");
+    const dialog = dialogId ? document.getElementById(dialogId) : null;
+
+    if (!dialog) {
+        return;
+    }
+
+    button.addEventListener("click", () => {
+        dialog.close();
+    });
+});

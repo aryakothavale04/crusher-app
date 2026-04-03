@@ -242,6 +242,8 @@ function getDiary2WeeklyReportData(entries, selectedWeekKey) {
     );
 
     return {
+        weeklyDiary2,
+        selectedDiary2WeekKey: weeklyDiary2[selectedWeekIndex]?.weekKey || "",
         activeDiary2Week: weeklyDiary2[selectedWeekIndex] || null,
         newerDiary2Week: selectedWeekIndex > 0 ? weeklyDiary2[selectedWeekIndex - 1] : null,
         olderDiary2Week: selectedWeekIndex >= 0 && selectedWeekIndex < weeklyDiary2.length - 1
