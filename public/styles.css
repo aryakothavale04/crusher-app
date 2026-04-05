@@ -80,6 +80,69 @@ a {
     box-shadow: var(--shadow-soft);
 }
 
+.app-navbar {
+    width: min(1120px, calc(100% - 32px));
+    margin: 24px auto 0;
+    padding: 18px 22px;
+    border: 1px solid rgba(217, 200, 180, 0.85);
+    border-radius: 24px;
+    background:
+        linear-gradient(180deg, rgba(255, 250, 242, 0.94), rgba(255, 250, 242, 0.88)),
+        radial-gradient(circle at top right, rgba(181, 101, 29, 0.08), transparent 35%);
+    box-shadow: var(--shadow-soft);
+}
+
+.app-navbar .container-fluid {
+    gap: 16px;
+}
+
+.app-navbar .navbar-brand {
+    margin-right: 0;
+}
+
+.app-navbar .navbar-toggler {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.app-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(181, 101, 29, 0.16);
+}
+
+.app-navbar .navbar-collapse {
+    align-items: flex-end;
+}
+
+.app-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.app-nav .nav-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--text);
+    font-weight: 600;
+    transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.app-nav .nav-link:hover,
+.app-nav .nav-link:focus {
+    transform: translateY(-1px);
+    color: var(--text);
+}
+
 .topbar-main {
     display: grid;
     gap: 10px;
@@ -995,6 +1058,34 @@ th {
         border-radius: 18px;
     }
 
+    .app-navbar {
+        width: min(1120px, calc(100% - 32px));
+        margin-top: 24px;
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .app-navbar .container-fluid {
+        align-items: flex-start;
+    }
+
+    .app-navbar .navbar-collapse {
+        width: 100%;
+        padding-top: 12px;
+    }
+
+    .app-nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .app-nav .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+
     .topbar-main {
         width: 100%;
         gap: 8px;
@@ -1109,6 +1200,12 @@ th {
         padding: 12px;
     }
 
+    .app-navbar {
+        width: min(1120px, calc(100% - 20px));
+        margin-top: 14px;
+        padding: 12px;
+    }
+
     .brand-kicker {
         font-size: 0.64rem;
         letter-spacing: 0.12em;
@@ -1120,6 +1217,10 @@ th {
     }
 
     .nav-links {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-nav {
         grid-template-columns: minmax(0, 1fr);
     }
 

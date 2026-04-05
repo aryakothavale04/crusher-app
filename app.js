@@ -164,7 +164,31 @@ function buildDiary2SalaryTotals(weekSummary) {
     return salaryTotals;
 }
 
-function buildDiary2WeeklySummaries(entries) {
+function buildDiary1IncomeMaps(entries) {
+    const incomeByDate = new Map();
+    const incomeByWeek = new Map();
+
+    entries.forEach((entry) => {
+        if (!entry.entryDate) {
+            return;
+        }
+
+        const dateKey = formatDateInput(entry.entryDate);
+        const weekStart = getFridayWeekStart(entry.entryDate);
+        const weekKey = weekStart ? formatDateInput(weekStart) : "";
+        const total = entry.total || 0;
+
+        incomeByDate.set(dateKey, (incomeByDate.get(dateKey) || 0) + total);
+
+        if (weekKey) {
+            incomeByWeek.set(weekKey, (incomeByWeek.get(weekKey) || 0) + total);
+        }
+    });
+
+    return { incomeByDate, incomeByWeek };
+}
+
+function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
     const weeklyMap = new Map();
 
     entries.forEach((entry) => {
@@ -223,7 +247,8 @@ function buildDiary2WeeklySummaries(entries) {
                     rama: 0,
                     hole: 0,
                     totalToGive: 0
-                }
+                },
+                incomeTotal: diary1IncomeByWeek.get(weekKey) || 0
             });
         }
 
@@ -272,8 +297,8 @@ function buildDiary2WeeklySummaries(entries) {
     return Array.from(weeklyMap.values()).sort((a, b) => b.weekStart - a.weekStart);
 }
 
-function getDiary2WeeklyReportData(entries, selectedWeekKey) {
-    const weeklyDiary2 = buildDiary2WeeklySummaries(entries);
+function getDiary2WeeklyReportData(entries, selectedWeekKey, diary1IncomeByWeek = new Map()) {
+    const weeklyDiary2 = buildDiary2WeeklySummaries(entries, diary1IncomeByWeek);
     const selectedWeekIndex = Math.max(
         weeklyDiary2.findIndex((week) => week.weekKey === selectedWeekKey),
         0
@@ -357,8 +382,10 @@ async function getDashboardData(selectedWeekKey) {
         ...ACTIVE_FILTER,
         $expr: { $lt: ["$paidAmount", "$total"] }
     }).sort({ entryDate: -1, createdAt: -1 });
+    const allDiary1 = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
-    const weeklyReport = getDiary2WeeklyReportData(allDiary2, selectedWeekKey);
+    const { incomeByWeek } = buildDiary1IncomeMaps(allDiary1);
+    const weeklyReport = getDiary2WeeklyReportData(allDiary2, selectedWeekKey, incomeByWeek);
 
     return {
         counts: {
@@ -608,12 +635,22 @@ app.delete("/trash/diary1", isLoggedIn, async (req, res) => {
 
 app.get("/diary2", isLoggedIn, async (req, res) => {
     const data = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
-    res.render("diary2/index", { data });
+    const diary1Entries = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const { incomeByDate } = buildDiary1IncomeMaps(diary1Entries);
+
+    const dataWithIncome = data.map((entry) => ({
+        ...entry.toObject(),
+        incomeTotal: incomeByDate.get(formatDateInput(entry.entryDate)) || 0
+    }));
+
+    res.render("diary2/index", { data: dataWithIncome });
 });
 
 app.get("/diary2/weekly-report", isLoggedIn, async (req, res) => {
+    const allDiary1 = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
-    res.render("diary2/weekly-report", getDiary2WeeklyReportData(allDiary2, req.query.week));
+    const { incomeByWeek } = buildDiary1IncomeMaps(allDiary1);
+    res.render("diary2/weekly-report", getDiary2WeeklyReportData(allDiary2, req.query.week, incomeByWeek));
 });
 
 app.get("/diary2/new", isLoggedIn, async (req, res) => {
