@@ -151,13 +151,29 @@ a {
 }
 
 .brand-mark {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 4px;
+    display: inline-grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "logo kicker"
+        "logo name";
+    column-gap: 12px;
+    row-gap: 4px;
+    align-items: center;
     flex-shrink: 0;
 }
 
+.brand-mark::before {
+    content: "";
+    grid-area: logo;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: url("/logo.png") center/cover no-repeat;
+    box-shadow: 0 10px 22px rgba(16, 40, 74, 0.18);
+}
+
 .brand-kicker {
+    grid-area: kicker;
     color: var(--primary-dark);
     text-transform: uppercase;
     letter-spacing: 0.14em;
@@ -166,6 +182,7 @@ a {
 }
 
 .brand-name {
+    grid-area: name;
     font-size: clamp(1.1rem, 2vw, 1.55rem);
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -1214,6 +1231,16 @@ th {
     .brand-name {
         font-size: 0.94rem;
         letter-spacing: 0.04em;
+    }
+
+    .brand-mark {
+        column-gap: 10px;
+    }
+
+    .brand-mark::before {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
     }
 
     .nav-links {
