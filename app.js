@@ -136,6 +136,34 @@ function getFridayWeekStart(value) {
     return start;
 }
 
+function buildDiary2SalaryTotals(weekSummary) {
+    const getHawariAmount = (person) => (
+        ((weekSummary.hawariTotals.tractor[person] || 0) * 30)
+        + ((weekSummary.hawariTotals.dumper[person] || 0) * 40)
+    );
+
+    const salaryTotals = {
+        mukadam: (weekSummary.rawalTotal * 280) + (weekSummary.dabar * 260),
+        piraji: (weekSummary.loaderTractor * 15)
+            + (weekSummary.loaderDumper * 30)
+            + (weekSummary.tractorTrip * 50)
+            + getHawariAmount("piraji"),
+        ranga: getHawariAmount("ranga"),
+        dada: (weekSummary.dalni * 100) + getHawariAmount("dada"),
+        rama: getHawariAmount("rama"),
+        hole: weekSummary.holes * 200
+    };
+
+    salaryTotals.totalToGive = salaryTotals.mukadam
+        + salaryTotals.piraji
+        + salaryTotals.ranga
+        + salaryTotals.dada
+        + salaryTotals.rama
+        + salaryTotals.hole;
+
+    return salaryTotals;
+}
+
 function buildDiary2WeeklySummaries(entries) {
     const weeklyMap = new Map();
 
@@ -186,6 +214,15 @@ function buildDiary2WeeklySummaries(entries) {
                         rama: 0,
                         other: 0
                     }
+                },
+                salaryTotals: {
+                    mukadam: 0,
+                    piraji: 0,
+                    ranga: 0,
+                    dada: 0,
+                    rama: 0,
+                    hole: 0,
+                    totalToGive: 0
                 }
             });
         }
@@ -229,6 +266,7 @@ function buildDiary2WeeklySummaries(entries) {
         weekSummary.hawariTotals.dumper.dada += entry.dumperHawari?.dada || 0;
         weekSummary.hawariTotals.dumper.rama += entry.dumperHawari?.rama || 0;
         weekSummary.hawariTotals.dumper.other += entry.dumperHawari?.other || 0;
+        weekSummary.salaryTotals = buildDiary2SalaryTotals(weekSummary);
     });
 
     return Array.from(weeklyMap.values()).sort((a, b) => b.weekStart - a.weekStart);
@@ -514,6 +552,38 @@ app.put("/diary1/:id", isLoggedIn, async (req, res) => {
     await entry.save();
 
     return res.redirect("/diary1");
+});
+
+app.post("/diary1/:id/payment", isLoggedIn, async (req, res) => {
+    const entry = await Diary1.findOne({ _id: req.params.id, ...ACTIVE_FILTER });
+
+    if (!entry) {
+        return res.status(404).json({ ok: false });
+    }
+
+    const requestedPaidAmount = Number(req.body.paidAmount);
+    const normalizedPaidAmount = Number.isFinite(requestedPaidAmount)
+        ? Math.max(0, Math.min(requestedPaidAmount, entry.total || 0))
+        : 0;
+
+    entry.paidAmount = normalizedPaidAmount;
+
+    if (normalizedPaidAmount <= 0) {
+        entry.paymentStatus = "Unpaid";
+    } else if (normalizedPaidAmount >= (entry.total || 0)) {
+        entry.paymentStatus = "Paid";
+    } else {
+        entry.paymentStatus = "Partial";
+    }
+
+    await entry.save();
+
+    return res.json({
+        ok: true,
+        paidAmount: entry.paidAmount,
+        paymentStatus: entry.paymentStatus,
+        total: entry.total
+    });
 });
 
 app.delete("/diary1/:id", isLoggedIn, async (req, res) => {

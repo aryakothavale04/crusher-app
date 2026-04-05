@@ -396,6 +396,12 @@ button {
     font-weight: 700;
 }
 
+.quick-pay-trigger {
+    border: 0;
+    cursor: pointer;
+    box-shadow: none;
+}
+
 .paid-badge {
     background: #dff4df;
     color: #1f6a35;
@@ -1043,6 +1049,7 @@ th {
         width: 100%;
         min-width: 0;
     }
+
 }
 
 @media (max-width: 420px) {
@@ -1124,9 +1131,10 @@ th {
         grid-column: span 4;
     }
 }
-    .keep-inline-heading {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
+
+.keep-inline-heading {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}

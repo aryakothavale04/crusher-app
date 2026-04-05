@@ -82,9 +82,15 @@
                                                 <td><%= entry.city %></td>
                                                 <td>
                                                     <%= entry.total %>
-                                                    <span class="payment-badge <%= entry.paidAmount >= entry.total ? 'paid-badge' : 'remaining-badge' %> amount-badge">
+                                                    <button
+                                                        type="button"
+                                                        class="payment-badge quick-pay-trigger <%= entry.paidAmount >= entry.total ? 'paid-badge' : 'remaining-badge' %> amount-badge"
+                                                        data-entry-id="<%= entry._id %>"
+                                                        data-entry-name="<%= entry.name %>"
+                                                        data-total="<%= entry.total %>"
+                                                        data-paid-amount="<%= entry.paidAmount %>">
                                                         <%= entry.paidAmount >= entry.total ? "Paid" : entry.paidAmount > 0 ? entry.total - entry.paidAmount : "Unpaid" %>
-                                                    </span>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         <% }) %>

@@ -118,6 +118,52 @@
                                 </table>
                             </div>
                         </section>
+
+                        <section class="weekly-detail-card">
+                            <div class="weekly-detail-head">
+                                <h5>Salary Detail</h5>
+                            </div>
+                            <div class="table-wrap">
+                                <table class="compact-info-table hawari-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Mukadam</td>
+                                            <td><%= activeDiary2Week.salaryTotals.mukadam %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Piraji</td>
+                                            <td><%= activeDiary2Week.salaryTotals.piraji %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ranga</td>
+                                            <td><%= activeDiary2Week.salaryTotals.ranga %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dada</td>
+                                            <td><%= activeDiary2Week.salaryTotals.dada %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rama</td>
+                                            <td><%= activeDiary2Week.salaryTotals.rama %></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hole</td>
+                                            <td><%= activeDiary2Week.salaryTotals.hole %></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Salary</strong></td>
+                                            <td><strong><%= activeDiary2Week.salaryTotals.totalToGive %></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
                     </div>
                 </article>
             <% } %>

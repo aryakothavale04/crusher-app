@@ -39,77 +39,6 @@
         <section class="panel-grid">
             <article class="panel">
                 <div class="panel-heading keep-inline-heading">
-                    <h3>Unpaid Entries</h3>
-                    <a href="/diary1" class="inline-edit-link">View all</a>
-                </div>
-
-                <% if (!pendingDiary1.length) { %>
-                    <p class="empty-state">No pending Diary 1 entries.</p>
-                    <% } else { %>
-                        <% const groupedLatestDiary1=pendingDiary1.reduce((groups, entry)=> {
-                            const key = formatDateDisplay(entry.entryDate);
-                            if (!groups[key]) {
-                            groups[key] = [];
-                            }
-                            groups[key].push(entry);
-                            return groups;
-                            }, {}); %>
-
-                            <div class="record-groups compact-record-groups">
-                                <% Object.entries(groupedLatestDiary1).forEach(([date, entries])=> { %>
-                                    <article class="record-day">
-                                        <div class="record-day-header">
-                                            <h4>
-                                                <%= date %> <span class="muted">
-                                                        <%= entries[0].day %>
-                                                    </span>
-                                            </h4>
-                                        </div>
-                                        <div class="table-wrap">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Qt</th>
-                                                        <th>Place</th>
-                                                        <th>Pending</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% entries.forEach((entry, index)=> { %>
-                                                        <tr>
-                                                            <td><a href="/diary1/<%= entry._id %>/edit"
-                                                                    class="entry-link">
-                                                                    <%= entry.name %>
-                                                                </a></td>
-                                                            <td class="qt-cell">
-                                                                <%= entry.quantity %>
-                                                                    <%= entry.vehicleType==="Tractor" ? "T" : "D" %>
-                                                            </td>
-                                                            <td>
-                                                                <%= entry.city %>
-                                                            </td>
-                                                            <td>
-                                                                <%= entry.total %>
-                                                                    <span
-                                                                        class="payment-badge remaining-badge amount-badge">
-                                                                        <%= entry.paidAmount> 0 ? entry.total -
-                                                                            entry.paidAmount : "Unpaid" %>
-                                                                    </span>
-                                                            </td>
-                                                        </tr>
-                                                        <% }) %>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </article>
-                                    <% }) %>
-                            </div>
-                            <% } %>
-            </article>
-
-            <article class="panel">
-                <div class="panel-heading keep-inline-heading">
                     <h3>Diary 2 Weekly Total</h3>
                     <a href="/diary2" class="inline-edit-link">View all</a>
                 </div>
@@ -214,9 +143,131 @@
                                         </table>
                                     </div>
                                 </section>
+
+                                <section class="weekly-detail-card">
+                                    <div class="weekly-detail-head">
+                                        <h5>Salary Detail</h5>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="compact-info-table hawari-detail-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Mukadam</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.mukadam %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Piraji</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.piraji %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Ranga</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.ranga %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Dada</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.dada %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Rama</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.rama %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Hole</td>
+                                                    <td><%= activeDiary2Week.salaryTotals.hole %></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Total Salary</strong></td>
+                                                    <td><strong><%= activeDiary2Week.salaryTotals.totalToGive %></strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
                             </div>
                         </article>
                         <% } %>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading keep-inline-heading">
+                    <h3>Unpaid Entries</h3>
+                    <a href="/diary1" class="inline-edit-link">View all</a>
+                </div>
+
+                <% if (!pendingDiary1.length) { %>
+                    <p class="empty-state">No pending Diary 1 entries.</p>
+                    <% } else { %>
+                        <% const groupedLatestDiary1=pendingDiary1.reduce((groups, entry)=> {
+                            const key = formatDateDisplay(entry.entryDate);
+                            if (!groups[key]) {
+                            groups[key] = [];
+                            }
+                            groups[key].push(entry);
+                            return groups;
+                            }, {}); %>
+
+                            <div class="record-groups compact-record-groups">
+                                <% Object.entries(groupedLatestDiary1).forEach(([date, entries])=> { %>
+                                    <article class="record-day">
+                                        <div class="record-day-header">
+                                            <h4>
+                                                <%= date %> <span class="muted">
+                                                        <%= entries[0].day %>
+                                                    </span>
+                                            </h4>
+                                        </div>
+                                        <div class="table-wrap">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Qt</th>
+                                                        <th>Place</th>
+                                                        <th>Pending</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% entries.forEach((entry, index)=> { %>
+                                                        <tr>
+                                                            <td><a href="/diary1/<%= entry._id %>/edit"
+                                                                    class="entry-link">
+                                                                    <%= entry.name %>
+                                                                </a></td>
+                                                            <td class="qt-cell">
+                                                                <%= entry.quantity %>
+                                                                    <%= entry.vehicleType==="Tractor" ? "T" : "D" %>
+                                                            </td>
+                                                            <td>
+                                                                <%= entry.city %>
+                                                            </td>
+                                                            <td>
+                                                                <%= entry.total %>
+                                                                    <button
+                                                                        type="button"
+                                                                        class="payment-badge quick-pay-trigger remaining-badge amount-badge"
+                                                                        data-entry-id="<%= entry._id %>"
+                                                                        data-entry-name="<%= entry.name %>"
+                                                                        data-total="<%= entry.total %>"
+                                                                        data-paid-amount="<%= entry.paidAmount %>">
+                                                                        <%= entry.paidAmount> 0 ? entry.total -
+                                                                            entry.paidAmount : "Unpaid" %>
+                                                                    </button>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </article>
+                                    <% }) %>
+                            </div>
+                            <% } %>
             </article>
         </section>
     </main>

@@ -205,3 +205,53 @@ weekPickerCloseButtons.forEach((button) => {
         dialog.close();
     });
 });
+
+const quickPayTriggers = Array.from(document.querySelectorAll(".quick-pay-trigger"));
+
+quickPayTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", async () => {
+        const entryId = trigger.dataset.entryId;
+        const entryName = trigger.dataset.entryName || "entry";
+        const total = Number(trigger.dataset.total) || 0;
+        const currentPaidAmount = Number(trigger.dataset.paidAmount) || 0;
+        const nextValue = window.prompt(
+            `Enter the amount paid by ${entryName}. Total amount: ${total}.`,
+            currentPaidAmount ? currentPaidAmount.toString() : ""
+        );
+
+        if (nextValue === null) {
+            return;
+        }
+
+        const paidAmount = Number(nextValue);
+
+        if (!Number.isFinite(paidAmount) || paidAmount < 0) {
+            window.alert("Please enter a valid paid amount.");
+            return;
+        }
+
+        trigger.disabled = true;
+
+        try {
+            const response = await fetch(`/diary1/${entryId}/payment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "Accept": "application/json"
+                },
+                body: new URLSearchParams({
+                    paidAmount: paidAmount.toString()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed");
+            }
+
+            window.location.reload();
+        } catch (error) {
+            window.alert("Could not update the payment right now.");
+            trigger.disabled = false;
+        }
+    });
+});
