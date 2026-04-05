@@ -152,6 +152,13 @@ a {
     transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
 }
 
+button.secondary-btn {
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--text);
+    box-shadow: none;
+}
+
 .nav-links a {
     display: inline-flex;
     justify-content: center;
