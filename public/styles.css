@@ -1127,6 +1127,17 @@ th {
         align-items: baseline;
     }
 
+    .record-day-header h4 {
+        font-size: 1rem;
+        line-height: 1.2;
+    }
+
+    .record-day-header h4 .muted {
+        display: inline-block;
+        margin-left: 6px;
+        font-size: 0.82rem;
+    }
+
     .weekly-total-nav {
         grid-template-columns: minmax(0, 1fr);
     }
@@ -1257,6 +1268,14 @@ th {
 
     .hero-actions {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .record-day-header h4 {
+        font-size: 0.92rem;
+    }
+
+    .record-day-header h4 .muted {
+        font-size: 0.76rem;
     }
 
     .weekly-total-panel,
