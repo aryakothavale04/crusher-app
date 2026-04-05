@@ -402,6 +402,49 @@ button {
     box-shadow: none;
 }
 
+.quick-pay-dialog {
+    width: min(420px, calc(100vw - 32px));
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface-strong);
+    box-shadow: var(--shadow);
+}
+
+.quick-pay-dialog::backdrop {
+    background: rgba(47, 36, 27, 0.32);
+}
+
+.quick-pay-form {
+    display: grid;
+    gap: 16px;
+    padding: 18px;
+}
+
+.quick-pay-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.quick-pay-head h5 {
+    margin: 0 0 4px;
+    font-size: 1.05rem;
+}
+
+.quick-pay-copy {
+    margin: 0;
+}
+
+.quick-pay-form .action-row {
+    justify-content: flex-end;
+}
+
+.quick-pay-form .secondary-btn {
+    cursor: pointer;
+}
+
 .paid-badge {
     background: #dff4df;
     color: #1f6a35;

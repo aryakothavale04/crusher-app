@@ -208,29 +208,115 @@ weekPickerCloseButtons.forEach((button) => {
 
 const quickPayTriggers = Array.from(document.querySelectorAll(".quick-pay-trigger"));
 
-quickPayTriggers.forEach((trigger) => {
-    trigger.addEventListener("click", async () => {
-        const entryId = trigger.dataset.entryId;
-        const entryName = trigger.dataset.entryName || "entry";
-        const total = Number(trigger.dataset.total) || 0;
-        const currentPaidAmount = Number(trigger.dataset.paidAmount) || 0;
-        const nextValue = window.prompt(
-            `Enter the amount paid by ${entryName}. Total amount: ${total}.`,
-            currentPaidAmount ? currentPaidAmount.toString() : ""
-        );
+if (quickPayTriggers.length) {
+    const quickPayDialog = document.createElement("dialog");
+    quickPayDialog.className = "quick-pay-dialog";
+    quickPayDialog.innerHTML = `
+        <form method="dialog" class="quick-pay-form">
+            <div class="quick-pay-head">
+                <div>
+                    <h5>Update Payment</h5>
+                    <p class="muted quick-pay-copy"></p>
+                </div>
+                <button type="button" class="week-picker-close quick-pay-close" aria-label="Close">x</button>
+            </div>
+            <label>
+                <span>Paid Amount</span>
+                <input
+                    type="number"
+                    class="quick-pay-input"
+                    min="0"
+                    step="0.01"
+                    inputmode="decimal"
+                    enterkeyhint="done"
+                    required>
+            </label>
+            <p class="alert alert-error quick-pay-error" hidden>Please enter a valid paid amount.</p>
+            <div class="action-row">
+                <button type="submit" class="primary-btn quick-pay-save">Save Payment</button>
+                <button type="button" class="secondary-btn quick-pay-cancel">Cancel</button>
+            </div>
+        </form>
+    `;
+    document.body.appendChild(quickPayDialog);
 
-        if (nextValue === null) {
+    const quickPayCopy = quickPayDialog.querySelector(".quick-pay-copy");
+    const quickPayInput = quickPayDialog.querySelector(".quick-pay-input");
+    const quickPayError = quickPayDialog.querySelector(".quick-pay-error");
+    const quickPayClose = quickPayDialog.querySelector(".quick-pay-close");
+    const quickPayCancel = quickPayDialog.querySelector(".quick-pay-cancel");
+    const quickPaySave = quickPayDialog.querySelector(".quick-pay-save");
+    const quickPayForm = quickPayDialog.querySelector(".quick-pay-form");
+
+    let activeQuickPayTrigger = null;
+
+    const resetQuickPayState = () => {
+        quickPayError.hidden = true;
+        quickPaySave.disabled = false;
+        quickPayInput.disabled = false;
+    };
+
+    const closeQuickPayDialog = () => {
+        quickPayDialog.close();
+        activeQuickPayTrigger = null;
+        resetQuickPayState();
+    };
+
+    quickPayTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+            activeQuickPayTrigger = trigger;
+            quickPayCopy.textContent = `Enter the amount paid by ${trigger.dataset.entryName || "this customer"}. Total amount: ${trigger.dataset.total || 0}.`;
+            quickPayInput.value = trigger.dataset.paidAmount || "";
+            resetQuickPayState();
+
+            if (typeof quickPayDialog.showModal === "function") {
+                quickPayDialog.showModal();
+                window.setTimeout(() => {
+                    quickPayInput.focus();
+                    quickPayInput.select();
+                }, 20);
+            }
+        });
+    });
+
+    quickPayDialog.addEventListener("click", (event) => {
+        const rect = quickPayDialog.getBoundingClientRect();
+        const isInside =
+            event.clientX >= rect.left
+            && event.clientX <= rect.right
+            && event.clientY >= rect.top
+            && event.clientY <= rect.bottom;
+
+        if (!isInside) {
+            closeQuickPayDialog();
+        }
+    });
+
+    quickPayClose.addEventListener("click", closeQuickPayDialog);
+    quickPayCancel.addEventListener("click", closeQuickPayDialog);
+
+    quickPayForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!activeQuickPayTrigger) {
+            closeQuickPayDialog();
             return;
         }
 
-        const paidAmount = Number(nextValue);
+        const entryId = activeQuickPayTrigger.dataset.entryId;
+        const total = Number(activeQuickPayTrigger.dataset.total) || 0;
+        const paidAmount = Number(quickPayInput.value);
 
-        if (!Number.isFinite(paidAmount) || paidAmount < 0) {
-            window.alert("Please enter a valid paid amount.");
+        if (!Number.isFinite(paidAmount) || paidAmount < 0 || paidAmount > total) {
+            quickPayError.textContent = `Please enter an amount between 0 and ${total}.`;
+            quickPayError.hidden = false;
+            quickPayInput.focus();
             return;
         }
 
-        trigger.disabled = true;
+        quickPayError.hidden = true;
+        quickPaySave.disabled = true;
+        quickPayInput.disabled = true;
 
         try {
             const response = await fetch(`/diary1/${entryId}/payment`, {
@@ -250,8 +336,11 @@ quickPayTriggers.forEach((trigger) => {
 
             window.location.reload();
         } catch (error) {
-            window.alert("Could not update the payment right now.");
-            trigger.disabled = false;
+            quickPayError.textContent = "Could not update the payment right now.";
+            quickPayError.hidden = false;
+            quickPaySave.disabled = false;
+            quickPayInput.disabled = false;
+            quickPayInput.focus();
         }
     });
-});
+}
