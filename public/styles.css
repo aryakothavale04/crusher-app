@@ -315,19 +315,34 @@ button.secondary-btn {
 .inline-search-form {
     display: flex;
     align-items: center;
-    flex: 1 1 360px;
+    flex: 1 1 420px;
     gap: 8px;
     margin: 0;
     min-width: 0;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
 }
 
-.inline-search-form label {
-    flex: 1;
+.search-input-group {
+    flex: 1 1 auto;
     min-width: 0;
+    flex-wrap: nowrap;
 }
 
-.inline-search-form input {
+.search-input-group .form-control {
     width: 100%;
+    min-height: 42px;
+    border-color: var(--line);
+    border-radius: 999px 0 0 999px;
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--text);
+    font: inherit;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.search-input-group .form-control:focus {
+    border-color: rgba(181, 101, 29, 0.7);
+    box-shadow: 0 0 0 0.2rem rgba(181, 101, 29, 0.14);
 }
 
 .icon-btn {
@@ -335,6 +350,20 @@ button.secondary-btn {
     min-height: 42px;
     padding: 0 12px;
     font-size: 1rem;
+    border-radius: 0 999px 999px 0;
+}
+
+.search-input-group .icon-btn {
+    border-color: var(--line);
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.search-input-group .icon-btn:hover,
+.search-input-group .icon-btn:focus {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(181, 101, 29, 0.7);
 }
 
 .sr-only {
@@ -1272,9 +1301,11 @@ th {
         grid-column: 1 / -1;
         width: 100%;
         flex-basis: auto;
+        gap: 10px;
+        flex-wrap: nowrap;
     }
 
-    .inline-search-form label {
+    .search-input-group {
         min-width: 0;
     }
 
@@ -1379,16 +1410,24 @@ th {
 
     .inline-search-form {
         gap: 6px;
+        align-items: center;
     }
 
-    .inline-search-form input {
+    .search-input-group .form-control {
         min-width: 0;
+        min-height: 42px;
+        font-size: 1rem;
+    }
+
+    .search-input-group .form-control::placeholder {
+        font-size: 0.98rem;
     }
 
     .icon-btn {
-        min-width: 40px;
-        min-height: 40px;
-        padding: 0 10px;
+        min-width: 34px;
+        min-height: 34px;
+        padding: 0 8px;
+        font-size: 0.8rem;
     }
 
     .record-day-header h4 {

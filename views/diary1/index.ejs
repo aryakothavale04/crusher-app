@@ -50,11 +50,17 @@
             <div class="hero-actions">
                 <a class="primary-btn" href="/diary1/new">Add Entry</a>
                 <form action="/diary1" method="GET" class="inline-search-form" data-auto-submit="true">
-                    <label>
-                        <span class="sr-only">Search by name</span>
-                        <input type="text" name="name" placeholder="Search by name" value="<%= searchTerm || '' %>">
-                    </label>
-                    <button class="secondary-btn icon-btn" type="submit" aria-label="Search by name">&#128269;</button>
+                    <div class="input-group search-input-group">
+                        <label class="sr-only" for="diary1-search">Search by name</label>
+                        <input
+                            type="text"
+                            id="diary1-search"
+                            name="name"
+                            class="form-control"
+                            placeholder="Search by name"
+                            value="<%= searchTerm || '' %>">
+                        <button class="btn btn-outline-secondary icon-btn" type="submit" aria-label="Search by name">&#128269;</button>
+                    </div>
                     <% if (searchTerm) { %>
                         <a class="secondary-btn" href="/diary1">Clear</a>
                     <% } %>
