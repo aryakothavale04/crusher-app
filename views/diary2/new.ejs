@@ -38,11 +38,18 @@
         </div>
     </nav>
 
+    <section class="hero-card compact-nav-strip">
+        <div class="hero-actions dashboard-quick-links">
+            <a class="secondary-btn" href="/diary1">Diary 1</a>
+            <a class="secondary-btn" href="/diary2">Diary 2</a>
+        </div>
+    </section>
+
     <main class="page-shell narrow-shell">
         <section class="panel">
             <div class="panel-heading">
                 <h3>Diary 2 Form</h3>
-                <span class="muted">Record daily site work and activity details.</span>
+                <span class="muted">Record daily work and expenses.</span>
             </div>
 
             <form action="/diary2" method="POST" class="entry-form" id="diary2-form">
@@ -140,8 +147,23 @@
                 </label>
 
                 <label>
-                    <span>Salary Paid</span>
+                    <span>Salary Paid to Piraji</span>
                     <input type="number" name="salaryPaidToPiraji" min="0" placeholder="0" value="<%= values.salaryPaidToPiraji %>" required>
+                </label>
+
+                <label>
+                    <span>Diesel Expense</span>
+                    <input type="number" name="dieselExpense" min="0" placeholder="0" value="<%= values.dieselExpense %>" required>
+                </label>
+
+                <label>
+                    <span>Maintenance Expense</span>
+                    <input type="number" name="maintenanceExpense" min="0" placeholder="0" value="<%= values.maintenanceExpense %>" required>
+                </label>
+
+                <label>
+                    <span>Other Expense</span>
+                    <input type="number" name="otherExpense" min="0" placeholder="0" value="<%= values.otherExpense %>" required>
                 </label>
 
                 <button class="primary-btn" type="submit">Save Entry</button>

@@ -41,7 +41,7 @@
     </nav>
 
     <main class="page-shell">
-        <section class="hero-card">
+        <section class="hero-card compact-nav-strip">
             <div class="hero-actions dashboard-quick-links">
                 <a class="secondary-btn" href="/diary1">Diary 1</a>
                 <a class="secondary-btn" href="/diary2">Diary 2</a>
@@ -208,6 +208,7 @@
                                     </div>
                                     <div class="diary2-summary-block">
                                         <p><strong>Total Income</strong> - <%= activeDiary2Week.incomeTotal %></p>
+                                        <p><strong>Total Expense</strong> - <%= activeDiary2Week.expenseTotals.totalExpense %></p>
                                     </div>
                                 </section>
                             </div>

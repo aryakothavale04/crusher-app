@@ -38,21 +38,38 @@
         </div>
     </nav>
 
+    <section class="hero-card compact-nav-strip">
+        <div class="hero-actions dashboard-quick-links">
+            <a class="secondary-btn" href="/diary1">Diary 1</a>
+            <a class="secondary-btn" href="/diary2">Diary 2</a>
+        </div>
+    </section>
+
     <main class="page-shell">
         <section class="hero-card">
             <div class="hero-actions">
                 <a class="primary-btn" href="/diary1/new">Add Entry</a>
+                <form action="/diary1" method="GET" class="inline-search-form" data-auto-submit="true">
+                    <label>
+                        <span class="sr-only">Search by name</span>
+                        <input type="text" name="name" placeholder="Search by name" value="<%= searchTerm || '' %>">
+                    </label>
+                    <button class="secondary-btn icon-btn" type="submit" aria-label="Search by name">&#128269;</button>
+                    <% if (searchTerm) { %>
+                        <a class="secondary-btn" href="/diary1">Clear</a>
+                    <% } %>
+                </form>
             </div>
         </section>
 
         <section class="panel">
             <div class="panel-heading">
-                <h3>All Entries</h3>
+                <h3><%= searchTerm ? `Entries for "${searchTerm}"` : "All Entries" %></h3>
                 <span class="muted"><%= data.length %> records</span>
             </div>
 
             <% if (!data.length) { %>
-                <p class="empty-state">No entries yet. Start with the first Diary 1 entry.</p>
+                <p class="empty-state"><%= searchTerm ? "No entries found for that name." : "No entries yet. Start with the first Diary 1 entry." %></p>
             <% } else { %>
                 <% const groupedDiary1 = data.reduce((groups, entry) => {
                     const key = formatDateDisplay(entry.entryDate);

@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "seed:sample": "node scripts/seedSampleData.js",
     "test": "echo \"No automated tests configured yet\""
   },
   "keywords": [],

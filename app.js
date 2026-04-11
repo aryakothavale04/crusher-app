@@ -45,9 +45,12 @@ loadEnvFile(".env.local", true);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/crusherDB";
 const NODE_ENV = process.env.NODE_ENV || "development";
 const isProduction = NODE_ENV === "production";
+const DEFAULT_MONGO_URL = isProduction
+    ? "mongodb+srv://aryakothavale04:arya123@cluster0.zs59bje.mongodb.net/?appName=Cluster0"
+    : "mongodb://127.0.0.1:27017/crusherDB";
+const MONGO_URL = process.env.MONGO_URL || DEFAULT_MONGO_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || "crusher-management-secret";
 const ACCESS_PIN = process.env.ACCESS_PIN || "4321";
 
@@ -119,6 +122,10 @@ function formatReportDateRange(startValue, endValueExclusive) {
     return `${formatDateDisplay(start)} to ${formatDateDisplay(inclusiveEnd)}`;
 }
 
+function escapeRegex(value = "") {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 const ACTIVE_FILTER = { deletedAt: null };
 
 function getFridayWeekStart(value) {
@@ -162,6 +169,20 @@ function buildDiary2SalaryTotals(weekSummary) {
         + salaryTotals.hole;
 
     return salaryTotals;
+}
+
+function buildDiary2ExpenseTotals(summary, salaryTotals = buildDiary2SalaryTotals(summary)) {
+    const dieselExpense = summary.dieselExpense || 0;
+    const maintenanceExpense = summary.maintenanceExpense || 0;
+    const otherExpense = summary.otherExpense || 0;
+
+    return {
+        salary: salaryTotals.totalToGive || 0,
+        diesel: dieselExpense,
+        maintenance: maintenanceExpense,
+        other: otherExpense,
+        totalExpense: (salaryTotals.totalToGive || 0) + dieselExpense + maintenanceExpense + otherExpense
+    };
 }
 
 function buildDiary1IncomeMaps(entries) {
@@ -220,6 +241,9 @@ function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
                 holes: 0,
                 tractorTrip: 0,
                 salaryPaidToPiraji: 0,
+                dieselExpense: 0,
+                maintenanceExpense: 0,
+                otherExpense: 0,
                 tractorHawari: 0,
                 dumperHawari: 0,
                 rawalTotal: 0,
@@ -247,6 +271,13 @@ function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
                     rama: 0,
                     hole: 0,
                     totalToGive: 0
+                },
+                expenseTotals: {
+                    salary: 0,
+                    diesel: 0,
+                    maintenance: 0,
+                    other: 0,
+                    totalExpense: 0
                 },
                 incomeTotal: diary1IncomeByWeek.get(weekKey) || 0
             });
@@ -279,6 +310,9 @@ function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
         weekSummary.holes += entry.holes || 0;
         weekSummary.tractorTrip += entry.tractorTrip || 0;
         weekSummary.salaryPaidToPiraji += entry.salaryPaidToPiraji || 0;
+        weekSummary.dieselExpense += entry.dieselExpense || 0;
+        weekSummary.maintenanceExpense += entry.maintenanceExpense || 0;
+        weekSummary.otherExpense += entry.otherExpense || 0;
         weekSummary.tractorHawari += tractorHawari;
         weekSummary.dumperHawari += dumperHawari;
         weekSummary.hawariTotals.tractor.ranga += entry.tractorHawari?.ranga || 0;
@@ -292,6 +326,7 @@ function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
         weekSummary.hawariTotals.dumper.rama += entry.dumperHawari?.rama || 0;
         weekSummary.hawariTotals.dumper.other += entry.dumperHawari?.other || 0;
         weekSummary.salaryTotals = buildDiary2SalaryTotals(weekSummary);
+        weekSummary.expenseTotals = buildDiary2ExpenseTotals(weekSummary, weekSummary.salaryTotals);
     });
 
     return Array.from(weeklyMap.values()).sort((a, b) => b.weekStart - a.weekStart);
@@ -356,7 +391,10 @@ function getDiary2FormData(entry = {}) {
             loaderTractor: entry.loaderTractor ?? entry.loaderQty ?? 0,
             loaderDumper: entry.loaderDumper ?? 0,
             tractorTrip: entry.tractorTrip ?? 0,
-            salaryPaidToPiraji: entry.salaryPaidToPiraji ?? 0
+            salaryPaidToPiraji: entry.salaryPaidToPiraji ?? 0,
+            dieselExpense: entry.dieselExpense ?? 0,
+            maintenanceExpense: entry.maintenanceExpense ?? 0,
+            otherExpense: entry.otherExpense ?? 0
         }
     };
 }
@@ -496,8 +534,15 @@ app.get("/trash", isLoggedIn, async (req, res) => {
 });
 
 app.get("/diary1", isLoggedIn, async (req, res) => {
-    const data = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
-    res.render("diary1/index", { data });
+    const searchTerm = (req.query.name || "").trim();
+    const filters = { ...ACTIVE_FILTER };
+
+    if (searchTerm) {
+        filters.name = { $regex: escapeRegex(searchTerm), $options: "i" };
+    }
+
+    const data = await Diary1.find(filters).sort({ entryDate: -1, createdAt: -1 });
+    res.render("diary1/index", { data, searchTerm });
 });
 
 app.get("/diary1/new", isLoggedIn, (req, res) => {
@@ -638,10 +683,41 @@ app.get("/diary2", isLoggedIn, async (req, res) => {
     const diary1Entries = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const { incomeByDate } = buildDiary1IncomeMaps(diary1Entries);
 
-    const dataWithIncome = data.map((entry) => ({
-        ...entry.toObject(),
-        incomeTotal: incomeByDate.get(formatDateInput(entry.entryDate)) || 0
-    }));
+    const dataWithIncome = data.map((entry) => {
+        const entryObject = entry.toObject();
+        const salaryTotals = buildDiary2SalaryTotals({
+            rawalTotal: (entryObject.rawalForMachine || 0) + (entryObject.rawalForOutside || 0),
+            dabar: entryObject.dabar || 0,
+            loaderTractor: entryObject.loaderTractor ?? entryObject.loaderQty ?? 0,
+            loaderDumper: entryObject.loaderDumper ?? 0,
+            tractorTrip: entryObject.tractorTrip || 0,
+            dalni: entryObject.dalni || 0,
+            holes: entryObject.holes || 0,
+            hawariTotals: {
+                tractor: {
+                    ranga: entryObject.tractorHawari?.ranga || 0,
+                    piraji: entryObject.tractorHawari?.piraji || 0,
+                    dada: entryObject.tractorHawari?.dada || 0,
+                    rama: entryObject.tractorHawari?.rama || 0,
+                    other: entryObject.tractorHawari?.other || 0
+                },
+                dumper: {
+                    ranga: entryObject.dumperHawari?.ranga || 0,
+                    piraji: entryObject.dumperHawari?.piraji || 0,
+                    dada: entryObject.dumperHawari?.dada || 0,
+                    rama: entryObject.dumperHawari?.rama || 0,
+                    other: entryObject.dumperHawari?.other || 0
+                }
+            }
+        });
+
+        return {
+            ...entryObject,
+            salaryTotals,
+            expenseTotals: buildDiary2ExpenseTotals(entryObject, salaryTotals),
+            incomeTotal: incomeByDate.get(formatDateInput(entry.entryDate)) || 0
+        };
+    });
 
     res.render("diary2/index", { data: dataWithIncome });
 });
@@ -690,7 +766,10 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
         loaderTractor,
         loaderDumper,
         tractorTrip,
-        salaryPaidToPiraji
+        salaryPaidToPiraji,
+        dieselExpense,
+        maintenanceExpense,
+        otherExpense
     } = req.body;
 
     const normalizedDate = normalizeDateOnly(entryDate);
@@ -725,7 +804,10 @@ app.post("/diary2", isLoggedIn, async (req, res) => {
         loaderTractor: normalizedLoaderTractor,
         loaderDumper: normalizedLoaderDumper,
         tractorTrip: Number(tractorTrip) || 0,
-        salaryPaidToPiraji: Number(salaryPaidToPiraji) || 0
+        salaryPaidToPiraji: Number(salaryPaidToPiraji) || 0,
+        dieselExpense: Number(dieselExpense) || 0,
+        maintenanceExpense: Number(maintenanceExpense) || 0,
+        otherExpense: Number(otherExpense) || 0
     };
 
     if (existingEntry) {
@@ -758,7 +840,10 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
         loaderTractor,
         loaderDumper,
         tractorTrip,
-        salaryPaidToPiraji
+        salaryPaidToPiraji,
+        dieselExpense,
+        maintenanceExpense,
+        otherExpense
     } = req.body;
 
     const entry = await Diary2.findOne({ _id: req.params.id, ...ACTIVE_FILTER });
@@ -795,6 +880,9 @@ app.put("/diary2/:id", isLoggedIn, async (req, res) => {
     entry.loaderQty = entry.loaderTractor + entry.loaderDumper;
     entry.tractorTrip = Number(tractorTrip) || 0;
     entry.salaryPaidToPiraji = Number(salaryPaidToPiraji) || 0;
+    entry.dieselExpense = Number(dieselExpense) || 0;
+    entry.maintenanceExpense = Number(maintenanceExpense) || 0;
+    entry.otherExpense = Number(otherExpense) || 0;
 
     await entry.save();
 

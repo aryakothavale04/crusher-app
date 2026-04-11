@@ -291,6 +291,64 @@ button.secondary-btn {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.compact-nav-strip {
+    width: min(1120px, calc(100% - 32px));
+    margin: 16px auto 0;
+    padding: 12px 16px;
+}
+
+.page-shell > .compact-nav-strip {
+    width: 100%;
+    margin: 0 0 22px;
+}
+
+.compact-nav-strip .hero-actions {
+    gap: 8px;
+}
+
+.compact-nav-strip .secondary-btn {
+    min-height: 36px;
+    padding: 7px 14px;
+    font-size: 0.92rem;
+}
+
+.inline-search-form {
+    display: flex;
+    align-items: center;
+    flex: 1 1 360px;
+    gap: 8px;
+    margin: 0;
+    min-width: 0;
+}
+
+.inline-search-form label {
+    flex: 1;
+    min-width: 0;
+}
+
+.inline-search-form input {
+    width: 100%;
+}
+
+.icon-btn {
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0 12px;
+    font-size: 1rem;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .stats-grid,
 .panel-grid,
 .summary-grid {
@@ -1200,6 +1258,30 @@ th {
         gap: 8px;
     }
 
+    .compact-nav-strip {
+        margin-top: 12px;
+        margin-bottom: 8px;
+        padding: 10px 12px;
+    }
+
+    .page-shell > .compact-nav-strip {
+        margin: 0 0 16px;
+    }
+
+    .inline-search-form {
+        grid-column: 1 / -1;
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .inline-search-form label {
+        min-width: 0;
+    }
+
+    .inline-search-form .secondary-btn {
+        flex-shrink: 0;
+    }
+
     .responsive-form-grid {
         grid-template-columns: minmax(0, 1fr);
         gap: 14px;
@@ -1244,6 +1326,17 @@ th {
         padding: 12px;
     }
 
+    .compact-nav-strip {
+        width: min(1120px, calc(100% - 20px));
+        margin-top: 10px;
+        margin-bottom: 6px;
+        padding: 10px;
+    }
+
+    .page-shell > .compact-nav-strip {
+        margin: 0 0 14px;
+    }
+
     .brand-kicker {
         font-size: 0.64rem;
         letter-spacing: 0.12em;
@@ -1282,6 +1375,20 @@ th {
 
     .dashboard-quick-links {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .inline-search-form {
+        gap: 6px;
+    }
+
+    .inline-search-form input {
+        min-width: 0;
+    }
+
+    .icon-btn {
+        min-width: 40px;
+        min-height: 40px;
+        padding: 0 10px;
     }
 
     .record-day-header h4 {

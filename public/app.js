@@ -206,6 +206,36 @@ weekPickerCloseButtons.forEach((button) => {
     });
 });
 
+const autoSubmitForms = Array.from(document.querySelectorAll('form[data-auto-submit="true"]'));
+
+autoSubmitForms.forEach((form) => {
+    const textInputs = Array.from(form.querySelectorAll('input[type="text"], input[type="search"]'));
+
+    if (!textInputs.length) {
+        return;
+    }
+
+    let submitTimeoutId = null;
+
+    const submitForm = () => {
+        if (submitTimeoutId) {
+            window.clearTimeout(submitTimeoutId);
+        }
+
+        submitTimeoutId = window.setTimeout(() => {
+            if (typeof form.requestSubmit === "function") {
+                form.requestSubmit();
+            } else {
+                form.submit();
+            }
+        }, 300);
+    };
+
+    textInputs.forEach((input) => {
+        input.addEventListener("input", submitForm);
+    });
+});
+
 const quickPayTriggers = Array.from(document.querySelectorAll(".quick-pay-trigger"));
 
 if (quickPayTriggers.length) {

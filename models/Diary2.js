@@ -100,6 +100,24 @@ const diary2Schema = new mongoose.Schema({
         min: 0,
         default: 0
     },
+    dieselExpense: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
+    maintenanceExpense: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
+    otherExpense: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
     deletedAt: {
         type: Date,
         default: null
