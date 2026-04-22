@@ -50,6 +50,20 @@
 
         <section class="panel-grid">
             <article class="panel">
+                <% const dashboardBaseQuery = new URLSearchParams(); %>
+                <% if (selectedDiary2WeekKey) { dashboardBaseQuery.set("week", selectedDiary2WeekKey); } %>
+                <% dashboardBaseQuery.set("unpaidLimit", pendingDiary1Pagination.limit); %>
+                <% const buildDashboardUnpaidPageUrl = (pageNumber) => {
+                    const params = new URLSearchParams(dashboardBaseQuery);
+                    params.set("unpaidPage", pageNumber);
+                    return `/dashboard?${params.toString()}`;
+                }; %>
+                <% const buildDashboardWeekUrl = (weekKey) => {
+                    const params = new URLSearchParams(dashboardBaseQuery);
+                    params.set("week", weekKey);
+                    params.set("unpaidPage", pendingDiary1Pagination.page);
+                    return `/dashboard?${params.toString()}`;
+                }; %>
                 <div class="panel-heading keep-inline-heading">
                     <h3>Weekly Total</h3>
                     <a href="/diary2" class="inline-edit-link">View all</a>
@@ -75,7 +89,7 @@
                                     <div class="week-picker-list">
                                         <% weeklyDiary2.forEach((week) => { %>
                                             <a
-                                                href="/dashboard?week=<%= week.weekKey %>"
+                                                href="<%= buildDashboardWeekUrl(week.weekKey) %>"
                                                 class="week-picker-link <%= week.weekKey === selectedDiary2WeekKey ? 'active-week-link' : '' %>">
                                                 <%= week.weekLabel %>
                                             </a>
@@ -225,7 +239,22 @@
             <article class="panel">
                 <div class="panel-heading keep-inline-heading">
                     <h3>Unpaid Entries</h3>
-                    <a href="/diary1" class="inline-edit-link">View all</a>
+                    <div class="panel-tools">
+                        <form action="/dashboard" method="GET" class="pagination-size-form">
+                            <% if (selectedDiary2WeekKey) { %>
+                                <input type="hidden" name="week" value="<%= selectedDiary2WeekKey %>">
+                            <% } %>
+                            <input type="hidden" name="unpaidPage" value="1">
+                            <label>
+                                <span>Show</span>
+                                <select name="unpaidLimit" onchange="this.form.requestSubmit()">
+                                    <option value="20" <%= pendingDiary1Pagination.limit === 20 ? "selected" : "" %>>20</option>
+                                    <option value="50" <%= pendingDiary1Pagination.limit === 50 ? "selected" : "" %>>50</option>
+                                </select>
+                            </label>
+                        </form>
+                        <a href="/diary1" class="inline-edit-link">View all</a>
+                    </div>
                 </div>
 
                 <% if (!pendingDiary1.length) { %>
@@ -294,6 +323,23 @@
                                         </div>
                                     </article>
                                     <% }) %>
+                            </div>
+
+                            <div class="pagination-bar">
+                                <span class="muted">Page <%= pendingDiary1Pagination.page %> of <%= pendingDiary1Pagination.totalPages %></span>
+                                <div class="pagination-actions">
+                                    <% if (pendingDiary1Pagination.hasPreviousPage) { %>
+                                        <a class="secondary-btn" href="<%= buildDashboardUnpaidPageUrl(pendingDiary1Pagination.previousPage) %>">Previous</a>
+                                    <% } else { %>
+                                        <span class="secondary-btn pagination-disabled" aria-disabled="true">Previous</span>
+                                    <% } %>
+
+                                    <% if (pendingDiary1Pagination.hasNextPage) { %>
+                                        <a class="secondary-btn" href="<%= buildDashboardUnpaidPageUrl(pendingDiary1Pagination.nextPage) %>">Next</a>
+                                    <% } else { %>
+                                        <span class="secondary-btn pagination-disabled" aria-disabled="true">Next</span>
+                                    <% } %>
+                                </div>
                             </div>
                             <% } %>
             </article>

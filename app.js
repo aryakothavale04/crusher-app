@@ -126,6 +126,36 @@ function escapeRegex(value = "") {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function getPaginationParams(query = {}) {
+    const allowedLimits = [20, 50];
+    const requestedLimit = Number(query.limit);
+    const limit = allowedLimits.includes(requestedLimit) ? requestedLimit : 20;
+    const requestedPage = Number(query.page);
+    const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+
+    return {
+        page,
+        limit,
+        skip: (page - 1) * limit
+    };
+}
+
+function buildPagination(totalRecords, page, limit) {
+    const totalPages = Math.max(1, Math.ceil(totalRecords / limit));
+    const currentPage = Math.min(page, totalPages);
+
+    return {
+        page: currentPage,
+        limit,
+        totalRecords,
+        totalPages,
+        hasPreviousPage: currentPage > 1,
+        hasNextPage: currentPage < totalPages,
+        previousPage: currentPage > 1 ? currentPage - 1 : 1,
+        nextPage: currentPage < totalPages ? currentPage + 1 : totalPages
+    };
+}
+
 const ACTIVE_FILTER = { deletedAt: null };
 
 function getFridayWeekStart(value) {
@@ -399,7 +429,7 @@ function getDiary2FormData(entry = {}) {
     };
 }
 
-async function getDashboardData(selectedWeekKey) {
+async function getDashboardData(selectedWeekKey, unpaidPage, unpaidLimit) {
     const diary1Count = await Diary1.countDocuments(ACTIVE_FILTER);
     const diary2Count = await Diary2.countDocuments(ACTIVE_FILTER);
 
@@ -416,10 +446,16 @@ async function getDashboardData(selectedWeekKey) {
         }
     ]);
 
-    const pendingDiary1 = await Diary1.find({
+    const pendingDiary1Filter = {
         ...ACTIVE_FILTER,
         $expr: { $lt: ["$paidAmount", "$total"] }
-    }).sort({ entryDate: -1, createdAt: -1 });
+    };
+    const pendingDiary1TotalRecords = await Diary1.countDocuments(pendingDiary1Filter);
+    const pendingDiary1Pagination = buildPagination(pendingDiary1TotalRecords, unpaidPage, unpaidLimit);
+    const pendingDiary1 = await Diary1.find(pendingDiary1Filter)
+        .sort({ entryDate: -1, createdAt: -1 })
+        .skip((pendingDiary1Pagination.page - 1) * pendingDiary1Pagination.limit)
+        .limit(pendingDiary1Pagination.limit);
     const allDiary1 = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const { incomeByWeek } = buildDiary1IncomeMaps(allDiary1);
@@ -432,6 +468,7 @@ async function getDashboardData(selectedWeekKey) {
         },
         totals: diary1Totals[0] || { totalAmount: 0, totalQuantity: 0 },
         pendingDiary1,
+        pendingDiary1Pagination,
         ...weeklyReport
     };
 }
@@ -516,7 +553,11 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/dashboard", isLoggedIn, async (req, res) => {
-    const dashboardData = await getDashboardData(req.query.week);
+    const { page: unpaidPage, limit: unpaidLimit } = getPaginationParams({
+        page: req.query.unpaidPage,
+        limit: req.query.unpaidLimit
+    });
+    const dashboardData = await getDashboardData(req.query.week, unpaidPage, unpaidLimit);
     res.render("dashboard", dashboardData);
 });
 
@@ -536,13 +577,24 @@ app.get("/trash", isLoggedIn, async (req, res) => {
 app.get("/diary1", isLoggedIn, async (req, res) => {
     const searchTerm = (req.query.name || "").trim();
     const filters = { ...ACTIVE_FILTER };
+    const { page, limit } = getPaginationParams(req.query);
 
     if (searchTerm) {
         filters.name = { $regex: escapeRegex(searchTerm), $options: "i" };
     }
 
-    const data = await Diary1.find(filters).sort({ entryDate: -1, createdAt: -1 });
-    res.render("diary1/index", { data, searchTerm });
+    const totalRecords = await Diary1.countDocuments(filters);
+    const pagination = buildPagination(totalRecords, page, limit);
+    const data = await Diary1.find(filters)
+        .sort({ entryDate: -1, createdAt: -1 })
+        .skip((pagination.page - 1) * pagination.limit)
+        .limit(pagination.limit);
+
+    res.render("diary1/index", {
+        data,
+        searchTerm,
+        pagination
+    });
 });
 
 app.get("/diary1/new", isLoggedIn, (req, res) => {
@@ -679,7 +731,13 @@ app.delete("/trash/diary1", isLoggedIn, async (req, res) => {
 });
 
 app.get("/diary2", isLoggedIn, async (req, res) => {
-    const data = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const { page, limit } = getPaginationParams(req.query);
+    const totalRecords = await Diary2.countDocuments(ACTIVE_FILTER);
+    const pagination = buildPagination(totalRecords, page, limit);
+    const data = await Diary2.find(ACTIVE_FILTER)
+        .sort({ entryDate: -1, createdAt: -1 })
+        .skip((pagination.page - 1) * pagination.limit)
+        .limit(pagination.limit);
     const diary1Entries = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const { incomeByDate } = buildDiary1IncomeMaps(diary1Entries);
 
@@ -719,7 +777,10 @@ app.get("/diary2", isLoggedIn, async (req, res) => {
         };
     });
 
-    res.render("diary2/index", { data: dataWithIncome });
+    res.render("diary2/index", {
+        data: dataWithIncome,
+        pagination
+    });
 });
 
 app.get("/diary2/weekly-report", isLoggedIn, async (req, res) => {

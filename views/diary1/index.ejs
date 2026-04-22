@@ -66,9 +66,32 @@
         </section>
 
         <section class="panel">
+            <% const diary1BaseQuery = new URLSearchParams(); %>
+            <% if (searchTerm) { diary1BaseQuery.set("name", searchTerm); } %>
+            <% diary1BaseQuery.set("limit", pagination.limit); %>
+            <% const buildDiary1PageUrl = (pageNumber) => {
+                const params = new URLSearchParams(diary1BaseQuery);
+                params.set("page", pageNumber);
+                return `/diary1?${params.toString()}`;
+            }; %>
             <div class="panel-heading">
                 <h3><%= searchTerm ? `Entries for "${searchTerm}"` : "All Entries" %></h3>
-                <span class="muted"><%= data.length %> records</span>
+                <div class="panel-tools">
+                    <span class="muted"><%= pagination.totalRecords %> records</span>
+                    <form action="/diary1" method="GET" class="pagination-size-form">
+                        <% if (searchTerm) { %>
+                            <input type="hidden" name="name" value="<%= searchTerm %>">
+                        <% } %>
+                        <input type="hidden" name="page" value="1">
+                        <label>
+                            <span>Show</span>
+                            <select name="limit" onchange="this.form.requestSubmit()">
+                                <option value="20" <%= pagination.limit === 20 ? "selected" : "" %>>20</option>
+                                <option value="50" <%= pagination.limit === 50 ? "selected" : "" %>>50</option>
+                            </select>
+                        </label>
+                    </form>
+                </div>
             </div>
 
             <% if (!data.length) { %>
@@ -124,6 +147,23 @@
                             </div>
                         </article>
                     <% }) %>
+                </div>
+
+                <div class="pagination-bar">
+                    <span class="muted">Page <%= pagination.page %> of <%= pagination.totalPages %></span>
+                    <div class="pagination-actions">
+                        <% if (pagination.hasPreviousPage) { %>
+                            <a class="secondary-btn" href="<%= buildDiary1PageUrl(pagination.previousPage) %>">Previous</a>
+                        <% } else { %>
+                            <span class="secondary-btn pagination-disabled" aria-disabled="true">Previous</span>
+                        <% } %>
+
+                        <% if (pagination.hasNextPage) { %>
+                            <a class="secondary-btn" href="<%= buildDiary1PageUrl(pagination.nextPage) %>">Next</a>
+                        <% } else { %>
+                            <span class="secondary-btn pagination-disabled" aria-disabled="true">Next</span>
+                        <% } %>
+                    </div>
                 </div>
             <% } %>
         </section>
