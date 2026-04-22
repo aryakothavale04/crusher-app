@@ -240,19 +240,7 @@
                 <div class="panel-heading keep-inline-heading">
                     <h3>Unpaid Entries</h3>
                     <div class="panel-tools">
-                        <form action="/dashboard" method="GET" class="pagination-size-form">
-                            <% if (selectedDiary2WeekKey) { %>
-                                <input type="hidden" name="week" value="<%= selectedDiary2WeekKey %>">
-                            <% } %>
-                            <input type="hidden" name="unpaidPage" value="1">
-                            <label>
-                                <span>Show</span>
-                                <select name="unpaidLimit" onchange="this.form.requestSubmit()">
-                                    <option value="20" <%= pendingDiary1Pagination.limit === 20 ? "selected" : "" %>>20</option>
-                                    <option value="50" <%= pendingDiary1Pagination.limit === 50 ? "selected" : "" %>>50</option>
-                                </select>
-                            </label>
-                        </form>
+                        <span class="muted">Showing 50 per page</span>
                         <a href="/diary1" class="inline-edit-link">View all</a>
                     </div>
                 </div>

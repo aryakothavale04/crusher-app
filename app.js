@@ -127,11 +127,9 @@ function escapeRegex(value = "") {
 }
 
 function getPaginationParams(query = {}) {
-    const allowedLimits = [20, 50];
-    const requestedLimit = Number(query.limit);
-    const limit = allowedLimits.includes(requestedLimit) ? requestedLimit : 20;
     const requestedPage = Number(query.page);
     const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+    const limit = 50;
 
     return {
         page,

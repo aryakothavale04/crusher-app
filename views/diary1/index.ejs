@@ -78,19 +78,7 @@
                 <h3><%= searchTerm ? `Entries for "${searchTerm}"` : "All Entries" %></h3>
                 <div class="panel-tools">
                     <span class="muted"><%= pagination.totalRecords %> records</span>
-                    <form action="/diary1" method="GET" class="pagination-size-form">
-                        <% if (searchTerm) { %>
-                            <input type="hidden" name="name" value="<%= searchTerm %>">
-                        <% } %>
-                        <input type="hidden" name="page" value="1">
-                        <label>
-                            <span>Show</span>
-                            <select name="limit" onchange="this.form.requestSubmit()">
-                                <option value="20" <%= pagination.limit === 20 ? "selected" : "" %>>20</option>
-                                <option value="50" <%= pagination.limit === 50 ? "selected" : "" %>>50</option>
-                            </select>
-                        </label>
-                    </form>
+                    <span class="muted">Showing 50 per page</span>
                 </div>
             </div>
 

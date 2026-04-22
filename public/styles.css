@@ -40,8 +40,7 @@ a {
 }
 
 .auth-body {
-    display: grid;
-    place-items: center;
+    position: relative;
     padding: 24px;
 }
 
@@ -65,6 +64,17 @@ a {
 .auth-card {
     width: min(460px, 100%);
     padding: 40px;
+}
+
+.auth-shell {
+    min-height: calc(100vh - 48px);
+    display: grid;
+    place-items: center;
+}
+
+.auth-footer {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
 }
 
 .topbar {
@@ -583,6 +593,8 @@ button {
     border-radius: 16px;
     border: 1px solid var(--line);
     background: #fff;
+    width: 100%;
+    max-width: 100%;
 }
 
 .record-groups {
@@ -806,27 +818,6 @@ th {
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
-}
-
-.pagination-size-form {
-    margin: 0;
-}
-
-.pagination-size-form label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--muted);
-}
-
-.pagination-size-form span {
-    margin: 0;
-}
-
-.pagination-size-form select {
-    width: auto;
-    min-width: 84px;
-    padding: 10px 14px;
 }
 
 .pagination-bar {
@@ -1064,6 +1055,10 @@ th {
     border: 1px solid var(--line);
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .weekly-detail-head {
@@ -1155,6 +1150,12 @@ th {
     white-space: nowrap;
 }
 
+.compact-info-table {
+    table-layout: fixed;
+    width: 100%;
+    max-width: 100%;
+}
+
 .hawari-detail-table th,
 .hawari-detail-table td {
     padding-top: 8px;
@@ -1168,6 +1169,7 @@ th {
 .diary2-compact-card {
     display: grid;
     gap: 14px;
+    min-width: 0;
 }
 
 .diary2-summary-block {
@@ -1176,6 +1178,7 @@ th {
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    min-width: 0;
 }
 
 .diary2-hawari-block,
@@ -1441,6 +1444,24 @@ th {
 
 }
 
+@media (min-width: 721px) {
+    .auth-body {
+        min-height: 100vh;
+    }
+
+    .auth-shell {
+        min-height: 100vh;
+        padding-bottom: 56px;
+    }
+
+    .auth-footer {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+    }
+}
+
 @media (max-width: 420px) {
     .topbar {
         width: min(1120px, calc(100% - 20px));
@@ -1583,6 +1604,145 @@ th {
 
     .form-sidecard {
         grid-column: span 4;
+    }
+
+    .day-entry-card {
+        padding: 24px 26px;
+    }
+
+    .diary2-index-page .day-entry-card .record-day-header,
+    .diary2-weekly-report-page .weekly-total-panel .record-day-header {
+        margin-bottom: 18px;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-compact-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 12px;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block,
+    .diary2-index-page .day-entry-card .weekly-detail-card,
+    .diary2-weekly-report-page .weekly-total-panel .diary2-summary-block,
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-card {
+        height: 100%;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block,
+    .diary2-weekly-report-page .weekly-total-panel .diary2-summary-block {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-content: start;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block p,
+    .diary2-weekly-report-page .weekly-total-panel .diary2-summary-block p {
+        margin: 0;
+        padding: 0 0 10px;
+        border-bottom: 1px solid rgba(229, 229, 231, 0.9);
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block p:last-child,
+    .diary2-weekly-report-page .weekly-total-panel .diary2-summary-block p:last-child {
+        margin-bottom: 0;
+    }
+
+    .diary2-index-page .day-entry-card .weekly-detail-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block {
+        grid-column: 1 / -1;
+    }
+
+    .diary2-index-page .day-entry-card .weekly-detail-card {
+        padding: 14px;
+    }
+
+    .diary2-index-page .day-entry-card .weekly-detail-head {
+        margin-bottom: 6px;
+    }
+
+    .diary2-index-page .day-entry-card .weekly-detail-head h5 {
+        font-size: 0.9rem;
+    }
+
+    .diary2-index-page .day-entry-card .diary2-summary-block {
+        padding: 14px;
+        gap: 10px 14px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel {
+        padding: 24px 24px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .diary2-compact-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 12px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .diary2-summary-block {
+        grid-column: 1 / -1;
+        padding: 14px;
+        gap: 10px 14px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-card {
+        padding: 14px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-head {
+        margin-bottom: 6px;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-head h5 {
+        font-size: 0.9rem;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .diary2-weekly-report-page .weekly-total-panel .weekly-detail-card:last-child .diary2-summary-block {
+        min-height: auto;
+    }
+
+    .diary2-index-page .day-entry-card .table-wrap,
+    .diary2-weekly-report-page .weekly-total-panel .table-wrap {
+        height: 100%;
+        min-width: 0;
+    }
+
+    .compact-info-table th,
+    .compact-info-table td {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        padding: 8px 6px;
+        font-size: 0.9rem;
+    }
+
+    .diary2-index-page .day-entry-card .compact-info-table th,
+    .diary2-index-page .day-entry-card .compact-info-table td,
+    .diary2-weekly-report-page .weekly-total-panel .compact-info-table th,
+    .diary2-weekly-report-page .weekly-total-panel .compact-info-table td {
+        padding: 6px 5px;
+        font-size: 0.84rem;
+    }
+
+    .hawari-detail-table th:first-child,
+    .hawari-detail-table td:first-child {
+        width: 42%;
+    }
+
+    .hawari-detail-table th:nth-child(2),
+    .hawari-detail-table td:nth-child(2),
+    .hawari-detail-table th:nth-child(3),
+    .hawari-detail-table td:nth-child(3) {
+        width: 29%;
+        text-align: center;
     }
 }
 
