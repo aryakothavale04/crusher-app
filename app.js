@@ -171,6 +171,40 @@ function getFridayWeekStart(value) {
     return start;
 }
 
+function getMonthStart(value) {
+    const date = value instanceof Date ? new Date(value.getTime()) : normalizeDateOnly(value);
+
+    if (!date) {
+        return null;
+    }
+
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+}
+
+function getYearStart(value) {
+    const date = value instanceof Date ? new Date(value.getTime()) : normalizeDateOnly(value);
+
+    if (!date) {
+        return null;
+    }
+
+    return new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+}
+
+function formatMonthLabel(value) {
+    const date = value instanceof Date ? value : normalizeDateOnly(value);
+
+    if (!date) {
+        return "";
+    }
+
+    return new Intl.DateTimeFormat("en-IN", {
+        timeZone: "UTC",
+        month: "long",
+        year: "numeric"
+    }).format(date);
+}
+
 function buildDiary2SalaryTotals(weekSummary) {
     const getHawariAmount = (person) => (
         ((weekSummary.hawariTotals.tractor[person] || 0) * 30)
@@ -216,6 +250,8 @@ function buildDiary2ExpenseTotals(summary, salaryTotals = buildDiary2SalaryTotal
 function buildDiary1IncomeMaps(entries) {
     const incomeByDate = new Map();
     const incomeByWeek = new Map();
+    const incomeByMonth = new Map();
+    const incomeByYear = new Map();
 
     entries.forEach((entry) => {
         if (!entry.entryDate) {
@@ -225,6 +261,10 @@ function buildDiary1IncomeMaps(entries) {
         const dateKey = formatDateInput(entry.entryDate);
         const weekStart = getFridayWeekStart(entry.entryDate);
         const weekKey = weekStart ? formatDateInput(weekStart) : "";
+        const monthStart = getMonthStart(entry.entryDate);
+        const monthKey = monthStart ? formatDateInput(monthStart) : "";
+        const yearStart = getYearStart(entry.entryDate);
+        const yearKey = yearStart ? formatDateInput(yearStart) : "";
         const total = entry.total || 0;
 
         incomeByDate.set(dateKey, (incomeByDate.get(dateKey) || 0) + total);
@@ -232,9 +272,118 @@ function buildDiary1IncomeMaps(entries) {
         if (weekKey) {
             incomeByWeek.set(weekKey, (incomeByWeek.get(weekKey) || 0) + total);
         }
+
+        if (monthKey) {
+            incomeByMonth.set(monthKey, (incomeByMonth.get(monthKey) || 0) + total);
+        }
+
+        if (yearKey) {
+            incomeByYear.set(yearKey, (incomeByYear.get(yearKey) || 0) + total);
+        }
     });
 
-    return { incomeByDate, incomeByWeek };
+    return { incomeByDate, incomeByWeek, incomeByMonth, incomeByYear };
+}
+
+function buildDiary2EmptySummary(periodInfo, incomeTotal = 0) {
+    return {
+        ...periodInfo,
+        entryCount: 0,
+        rawalForMachine: 0,
+        rawalForOutside: 0,
+        dalni: 0,
+        dabar: 0,
+        loaderQty: 0,
+        loaderTractor: 0,
+        loaderDumper: 0,
+        holes: 0,
+        tractorTrip: 0,
+        salaryPaidToPiraji: 0,
+        dieselExpense: 0,
+        maintenanceExpense: 0,
+        otherExpense: 0,
+        tractorHawari: 0,
+        dumperHawari: 0,
+        rawalTotal: 0,
+        hawariTotals: {
+            tractor: {
+                ranga: 0,
+                piraji: 0,
+                dada: 0,
+                rama: 0,
+                other: 0
+            },
+            dumper: {
+                ranga: 0,
+                piraji: 0,
+                dada: 0,
+                rama: 0,
+                other: 0
+            }
+        },
+        salaryTotals: {
+            mukadam: 0,
+            piraji: 0,
+            ranga: 0,
+            dada: 0,
+            rama: 0,
+            hole: 0,
+            totalToGive: 0
+        },
+        expenseTotals: {
+            salary: 0,
+            diesel: 0,
+            maintenance: 0,
+            other: 0,
+            totalExpense: 0
+        },
+        incomeTotal
+    };
+}
+
+function addDiary2EntryToSummary(summary, entry) {
+    const tractorHawari = (entry.tractorHawari?.ranga || 0)
+        + (entry.tractorHawari?.piraji || 0)
+        + (entry.tractorHawari?.dada || 0)
+        + (entry.tractorHawari?.rama || 0)
+        + (entry.tractorHawari?.other || 0);
+    const dumperHawari = (entry.dumperHawari?.ranga || 0)
+        + (entry.dumperHawari?.piraji || 0)
+        + (entry.dumperHawari?.dada || 0)
+        + (entry.dumperHawari?.rama || 0)
+        + (entry.dumperHawari?.other || 0);
+    const loaderTractor = entry.loaderTractor ?? entry.loaderQty ?? 0;
+    const loaderDumper = entry.loaderDumper ?? 0;
+
+    summary.entryCount += 1;
+    summary.rawalForMachine += entry.rawalForMachine || 0;
+    summary.rawalForOutside += entry.rawalForOutside || 0;
+    summary.rawalTotal += (entry.rawalForMachine || 0) + (entry.rawalForOutside || 0);
+    summary.dalni += entry.dalni || 0;
+    summary.dabar += entry.dabar || 0;
+    summary.loaderQty += (entry.loaderQty ?? (loaderTractor + loaderDumper)) || 0;
+    summary.loaderTractor += loaderTractor;
+    summary.loaderDumper += loaderDumper;
+    summary.holes += entry.holes || 0;
+    summary.tractorTrip += entry.tractorTrip || 0;
+    summary.salaryPaidToPiraji += entry.salaryPaidToPiraji || 0;
+    summary.dieselExpense += entry.dieselExpense || 0;
+    summary.maintenanceExpense += entry.maintenanceExpense || 0;
+    summary.otherExpense += entry.otherExpense || 0;
+    summary.tractorHawari += tractorHawari;
+    summary.dumperHawari += dumperHawari;
+    summary.hawariTotals.tractor.ranga += entry.tractorHawari?.ranga || 0;
+    summary.hawariTotals.tractor.piraji += entry.tractorHawari?.piraji || 0;
+    summary.hawariTotals.tractor.dada += entry.tractorHawari?.dada || 0;
+    summary.hawariTotals.tractor.rama += entry.tractorHawari?.rama || 0;
+    summary.hawariTotals.tractor.other += entry.tractorHawari?.other || 0;
+    summary.hawariTotals.dumper.ranga += entry.dumperHawari?.ranga || 0;
+    summary.hawariTotals.dumper.piraji += entry.dumperHawari?.piraji || 0;
+    summary.hawariTotals.dumper.dada += entry.dumperHawari?.dada || 0;
+    summary.hawariTotals.dumper.rama += entry.dumperHawari?.rama || 0;
+    summary.hawariTotals.dumper.other += entry.dumperHawari?.other || 0;
+    summary.salaryTotals = buildDiary2SalaryTotals(summary);
+    summary.expenseTotals = buildDiary2ExpenseTotals(summary, summary.salaryTotals);
 }
 
 function buildDiary2WeeklySummaries(entries, diary1IncomeByWeek = new Map()) {
@@ -376,6 +525,112 @@ function getDiary2WeeklyReportData(entries, selectedWeekKey, diary1IncomeByWeek 
             ? weeklyDiary2[selectedWeekIndex + 1]
             : null
     };
+}
+
+function buildDiary2PeriodSummaries(entries, incomeByPeriod = new Map(), getPeriodInfo) {
+    const periodMap = new Map();
+
+    entries.forEach((entry) => {
+        const periodInfo = getPeriodInfo(entry.entryDate);
+
+        if (!periodInfo) {
+            return;
+        }
+
+        if (!periodMap.has(periodInfo.periodKey)) {
+            periodMap.set(periodInfo.periodKey, buildDiary2EmptySummary(
+                periodInfo,
+                incomeByPeriod.get(periodInfo.periodKey) || 0
+            ));
+        }
+
+        addDiary2EntryToSummary(periodMap.get(periodInfo.periodKey), entry);
+    });
+
+    return Array.from(periodMap.values()).sort((a, b) => b.periodStart - a.periodStart);
+}
+
+function getDiary2PeriodReportData(entries, selectedPeriodKey, incomeByPeriod, getPeriodInfo, reportConfig) {
+    const periods = buildDiary2PeriodSummaries(entries, incomeByPeriod, getPeriodInfo);
+    const selectedPeriodIndex = Math.max(
+        periods.findIndex((period) => period.periodKey === selectedPeriodKey),
+        0
+    );
+
+    return {
+        ...reportConfig,
+        periods,
+        selectedPeriodKey: periods[selectedPeriodIndex]?.periodKey || "",
+        activePeriod: periods[selectedPeriodIndex] || null,
+        newerPeriod: selectedPeriodIndex > 0 ? periods[selectedPeriodIndex - 1] : null,
+        olderPeriod: selectedPeriodIndex >= 0 && selectedPeriodIndex < periods.length - 1
+            ? periods[selectedPeriodIndex + 1]
+            : null
+    };
+}
+
+function getDiary2MonthlyReportData(entries, selectedMonthKey, diary1IncomeByMonth = new Map()) {
+    return getDiary2PeriodReportData(
+        entries,
+        selectedMonthKey,
+        diary1IncomeByMonth,
+        (entryDate) => {
+            const monthStart = getMonthStart(entryDate);
+
+            if (!monthStart) {
+                return null;
+            }
+
+            const monthEnd = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 1));
+
+            return {
+                periodKey: formatDateInput(monthStart),
+                periodStart: monthStart,
+                periodEnd: monthEnd,
+                periodLabel: formatMonthLabel(monthStart)
+            };
+        },
+        {
+            pageTitle: "Monthly Report",
+            panelTitle: "Calendar Month Report",
+            pickerTitle: "Select Month",
+            pickerEyebrow: "Report Month",
+            reportPath: "/diary2/monthly-report",
+            periodQueryName: "month"
+        }
+    );
+}
+
+function getDiary2YearlyReportData(entries, selectedYearKey, diary1IncomeByYear = new Map()) {
+    return getDiary2PeriodReportData(
+        entries,
+        selectedYearKey,
+        diary1IncomeByYear,
+        (entryDate) => {
+            const yearStart = getYearStart(entryDate);
+
+            if (!yearStart) {
+                return null;
+            }
+
+            const yearEnd = new Date(Date.UTC(yearStart.getUTCFullYear() + 1, 0, 1));
+
+            return {
+                periodKey: formatDateInput(yearStart),
+                periodStart: yearStart,
+                periodEnd: yearEnd,
+                periodLabel: String(yearStart.getUTCFullYear())
+            };
+        },
+        {
+            pageTitle: "Yearly Report",
+            panelTitle: "Calendar Year Report",
+            pickerTitle: "Select Year",
+            pickerEyebrow: "Report Year",
+            reportPath: "/diary2/yearly-report",
+            periodQueryName: "year"
+        }
+    );
 }
 
 function getDiary1FormData(entry = {}) {
@@ -786,6 +1041,20 @@ app.get("/diary2/weekly-report", isLoggedIn, async (req, res) => {
     const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
     const { incomeByWeek } = buildDiary1IncomeMaps(allDiary1);
     res.render("diary2/weekly-report", getDiary2WeeklyReportData(allDiary2, req.query.week, incomeByWeek));
+});
+
+app.get("/diary2/monthly-report", isLoggedIn, async (req, res) => {
+    const allDiary1 = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const { incomeByMonth } = buildDiary1IncomeMaps(allDiary1);
+    res.render("diary2/period-report", getDiary2MonthlyReportData(allDiary2, req.query.month, incomeByMonth));
+});
+
+app.get("/diary2/yearly-report", isLoggedIn, async (req, res) => {
+    const allDiary1 = await Diary1.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const allDiary2 = await Diary2.find(ACTIVE_FILTER).sort({ entryDate: -1, createdAt: -1 });
+    const { incomeByYear } = buildDiary1IncomeMaps(allDiary1);
+    res.render("diary2/period-report", getDiary2YearlyReportData(allDiary2, req.query.year, incomeByYear));
 });
 
 app.get("/diary2/new", isLoggedIn, async (req, res) => {
