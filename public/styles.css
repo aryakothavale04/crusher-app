@@ -173,6 +173,8 @@ a {
     row-gap: 4px;
     align-items: center;
     flex-shrink: 0;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .brand-mark::before {
@@ -199,6 +201,8 @@ a {
     font-size: clamp(1.1rem, 2vw, 1.55rem);
     font-weight: 600;
     letter-spacing: -0.02em;
+    line-height: 1.12;
+    overflow-wrap: break-word;
 }
 
 .page-title-block {
@@ -1264,10 +1268,14 @@ th {
     }
 
     .app-navbar .container-fluid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: flex-start;
+        gap: 12px;
     }
 
     .app-navbar .navbar-collapse {
+        grid-column: 1 / -1;
         width: 100%;
         padding-top: 12px;
     }
@@ -1285,8 +1293,14 @@ th {
     }
 
     .topbar-main {
-        width: 100%;
+        width: auto;
+        min-width: 0;
         gap: 8px;
+    }
+
+    .app-navbar .navbar-toggler {
+        justify-self: end;
+        align-self: start;
     }
 
     .page-title-block {
@@ -1492,8 +1506,8 @@ th {
     }
 
     .brand-name {
-        font-size: 0.94rem;
-        letter-spacing: 0.04em;
+        font-size: 0.88rem;
+        letter-spacing: 0;
     }
 
     .brand-mark {
